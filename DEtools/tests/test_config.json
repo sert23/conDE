@@ -1,0 +1,10 @@
+{
+  "hey": "hey, hey",
+  "outdir": "/Users/ernesto/PycharmProjects/conDE/tests",
+  "input_matrix": "/Users/ernesto/PycharmProjects/conDE/tests",
+  "Rscript_path": "/opt/local/R-3.5.3/bin/Rscript",
+  "base_name": "/opt/local/R-3.5.3/bin/Rscript",
+  "matrixDesc": "exosome,exosome,exosome,exosome,exosome,exosome,cell,cell,cell,cell,cell,cell",
+  "scripts_folder": "/Users/ernesto/PycharmProjects/conDE/rscripts/"
+
+}

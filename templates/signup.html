@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign up</button>
+  </form>
+{% endblock %}
+
+{% block js %}
+  <script src="{% static 'js/jquery-3.1.0.min.js'%}"></script>
+
+{#        <script>#}
+{#    $("#id_SRRtext").change(function () {#}
+{#      alert( $(this).val() );#}
+{#    });#}
+{#  </script>#}
+
+
+   <script>
+    $("#id_SRRtext").change(function () {
+      var test_string = $(this).val();
+
+      $.ajax({
+        url: '{% url "ajax_test" %}',
+        data: {
+          'test_string': test_string
+        },
+        dataType: 'json',
+        success: function (data) {
+          alert(data.output)
+        }
+      });
+
+    });
+  </script>
+{% endblock %}

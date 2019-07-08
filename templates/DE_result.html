@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Results for your job: {{ job_id }}</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <div class="row">
+
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-s font-weight-bold text-primary text-uppercase mb-1">Consensus summary</div>
+                        <div class="h6 mb-0 font-italic text-gray-800">&bull; Download consensus</div>
+                        <div class="h6 mb-0 font-italic text-gray-800">&bull; Summary plots</div>
+                        <a href="#Summary" onclick="showTab('Summary')" class="stretched-link"></a>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-chart-bar fa-3x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <div id="individual_card" class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-s font-weight-bold text-primary text-uppercase mb-1">Individual method report</div>
+                        <div class="h6 mb-0 font-italic text-gray-800">&bull; Download consensus</div>
+                        <div class="h6 mb-0 font-italic text-gray-800">&bull; Summary plots</div>
+{#                        <a href="#Individual" id="#openIndividual" onclick="showButton('individual_card')" class="stretched-link"></a>#}
+                        <a href="#Individual" id="#openIndividual" onclick="showTab('Individual')" class="stretched-link"></a>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-chart-line fa-3x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        <br>
+
+        <div class="row">
+        <div class="tab-content">
+            <div class="row">
+            <div class="col-lg-12">
+                <div class="tab-pane active" id="Summary">
+                <div class="row">
+                <div class="col-lg-12">
+                   <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Select methods and thresholds to calculate consensus</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                    <div class="col-lg-6">
+                    <label for="id_FC" class="control-label ">
+                    Minimum Fold Change:
+                    </label>  <input type="text" placeholder="1" id="id_FC" size="4" style="padding-right: 8px;"/>
+                     <label for="id_pval" class="control-label ">
+                    Maximum p-value:
+                    </label>  <input type="text" placeholder="0.05" id="id_pval" size="4" style="padding-right: 8px;"/>
+
+
+               </div>
+                <div class="col-lg-6">
+                    {% for method in method_list %}
+                        <label for="{{ method }}" class="checkbox " style="padding-right: 8px;"> <input type="checkbox" class="checkboxinput" id="{{ method }}" checked/>
+                        {{ method }}
+                    </label>
+                  {% endfor %}
+                </div>
+                    </div>
+                </div>
+
+              </div>
+                </div>
+            </div>
+                <div class="row">
+                   <div class="col-lg-4">
+
+                   <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Consensus differentially expressed genes</h6>
+                </div>
+                <div class="card-body">
+                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                </div>
+              </div>
+            </div>
+                    <div class="col-lg-8">
+
+                   <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Visualisations</h6>
+                </div>
+                <div class="card-body">
+                    <select class="form-control select" id="id_plot_type">
+                        {% for plot_type,plot_name in plot_list %}
+                        <option value="{{ plot_type }}">{{ plot_name }}</option>
+                        {% endfor %}
+
+                    </select>
+                    <br>
+                <div class="col-lg-12">
+{#                    <iframe src="{{ start_plot }}" width="500" height="500" allowfullscreen></iframe>#}
+
+
+                </div>
+                </div>
+              </div>
+            </div>
+                </div>
+                </div>
+{#            end of first tab#}
+
+                </div>
+                </div>
+            <div class="row">
+
+
+                </div>
+
+
+        <div class="tab-pane" id="Individual">
+                        <p>Individual</p>
+                </div>
+        </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script>
+function showTab(element)  {
+    var tabContents = document.getElementsByClassName('tab-pane');
+    for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = 'none';
+    }
+    // change tabsX into tabs-X in order to find the correct tab content
+    document.getElementById(element).style.display = 'block';
+    {#alert(element);#}
+    return true;
+}
+
+    </script>
+
+    <script src="{% static 'js/jquery-3.1.0.min.js'%}"></script>
+
+    <script>
+    $(document).on('click', '.border-left-primary', function() {
+       var cards = document.getElementsByClassName('border-bottom-success');
+        for (var i = 0; i < cards.length; i++) {
+            cards[i].className = "card border-left-primary shadow h-100 py-2";
+
+        }
+    $(this).attr("class", "card mb-4 py-3 border-bottom-success");
+    })
+
+function showButton(element){
+
+    $("#individual_card").attr("class", "card mb-4 py-3 border-bottom-success");
+    alert(element);
+    return true;
+}
+
+    </script>
+
+    <script>
+    $("#id_plot_type").change(function () {
+      var test_string = $(this).val();
+      $.ajax({
+        url: '{% url "ajax_graph" %}',
+        data: {
+          'test_string': test_string
+        },
+        dataType: 'json',
+        success: function (data) {
+          alert(data.path)
+        }
+      });
+
+    });
+  </script>
+
+{% endblock %}
