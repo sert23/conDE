@@ -1,7 +1,10 @@
 library(venn)
 library(rjson)
 
-json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA88/config.json")
+args <- commandArgs(TRUE)
+
+# json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA88/config.json")
+json_data <- fromJSON(file=args[1])
 methods <- json_data[["methods"]]
 folder <- json_data[["folder"]]
 FC <- json_data[["FC"]]
@@ -43,7 +46,9 @@ for (method in methods) {
   i <- i + 1
 }
 
-out_path <- paste(folder,"plots","VennDiagram.jpg", sep="/")
+out_path <- paste(folder,"plots","Venn.jpg", sep="/")
 jpeg(out_path, width = 8, height = 5, units = 'in', res = 300)
 venn(l,ilab=TRUE, zcolor = "style")
+zeroset <- matrix(1000*c(0,1,1,0,0,0,0,1,1,0), ncol = 2)
+lines(zeroset, col='white', lwd=5)
 dev.off()
