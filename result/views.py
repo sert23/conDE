@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import FormView, DetailView
 from django.http import JsonResponse
-from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST
+from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH
 import pandas as pd
 import os
 import subprocess
@@ -116,13 +116,13 @@ def draw_barplot(path_to_config):
 
 def draw_plots(path_to_config):
     wait_list = []
-    call_list = [RSCRIPT_PATH, "upset.R", path_to_config]
+    call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH,"upset.R"),  path_to_config]
     draw_barplot(path_to_config)
     if not LOCAL_TEST:
         wait_list.append(subprocess.Popen(call_list,
                                          stdout=subprocess.PIPE,
                                          stderr=subprocess.PIPE))
-        call_list = [RSCRIPT_PATH, "VennD.R", path_to_config]
+        call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH,"VennD.R"), path_to_config]
         wait_list.append(subprocess.Popen(call_list,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.PIPE))
