@@ -50,14 +50,14 @@
 
         <br>
 
-        <div class="row">
+
         <div class="tab-content">
             <div class="row">
             <div class="col-lg-12">
                 <div class="tab-pane active" id="Summary">
                 <div class="row">
-                <div class="col-lg-12">
-                   <div class="card shadow mb-4">
+                <div class="col-md-12">
+                   <div class="card shadow">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">Select methods and thresholds to calculate consensus</h6>
                 </div>
@@ -66,16 +66,16 @@
                     <div class="col-lg-6">
                     <label for="id_FC" class="control-label ">
                     Minimum Fold Change:
-                    </label>  <input type="text" placeholder="1" id="id_FC" size="4" style="padding-right: 8px;"/>
+                    </label>  <input type="text" value="1" name="threshold" id="id_FC" size="4" style="padding-right: 8px;"/>
                      <label for="id_pval" class="control-label ">
                     Maximum p-value:
-                    </label>  <input type="text" placeholder="0.05" id="id_pval" size="4" style="padding-right: 8px;"/>
+                    </label>  <input type="text" value="0.05" name="threshold" id="id_pval" size="4" style="padding-right: 8px;"/>
 
 
                </div>
                 <div class="col-lg-6">
                     {% for method in method_list %}
-                        <label for="{{ method }}" class="checkbox " style="padding-right: 8px;"> <input type="checkbox" class="checkboxinput" id="{{ method }}" checked/>
+                        <label for="{{ method }}" class="checkbox " style="padding-right: 8px;"> <input name="method" type="checkbox" class="checkboxinput" id="{{ method }}" checked/>
                         {{ method }}
                     </label>
                   {% endfor %}
@@ -86,34 +86,161 @@
               </div>
                 </div>
             </div>
+                <br>
                 <div class="row">
                    <div class="col-lg-4">
 
-                   <div class="card shadow mb-4">
+                   <div class="card shadow">
                 <div class="card-header py-3">
                   <h6 class="m-0 font-weight-bold text-primary">Consensus differentially expressed genes</h6>
                 </div>
                 <div class="card-body">
-                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!
+                    Differentially expressed genes: 11000 <br>
+                    Number of differentially expressed genes: 11000
+                    Number of differentially expressed genes: 11000
+                    Number of differentially expressed genes: 11000 <br>
+
+                    List of selected genes <a href="/srnatoolbox/static/IK_exosomes.fastq.gz" download> <i class="fa fa-download fa-fw"></i> Download</a>
+                <br>
+                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal">  Preview DE table <i class="fa fa-table fa-fw"></i></a>
+
+{#                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!#}
+{#                Number of differentially expressed genes: 1180#}
                 </div>
               </div>
             </div>
+
+
                     <div class="col-lg-8">
 
                    <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Visualisations</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Visualisation of intersections</h6>
                 </div>
                 <div class="card-body">
-                    <select class="form-control select" id="id_plot_type">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <select class="form-control select" id="id_plot_type">
                         {% for plot_type,plot_name in plot_list %}
                         <option value="{{ plot_type }}">{{ plot_name }}</option>
                         {% endfor %}
 
                     </select>
-                    <br>
+                    </div>
+
+                <div class="col-lg-6">
+                        <select class="form-control select" id="id_set">
+                        {% for plot_type,plot_name in set_list %}
+                        <option value="{{ plot_type }}">{{ plot_name }}</option>
+                        {% endfor %}
+
+                    </select>
+                    </div>
+
+                </div>
+                <br>
+                <div id="outside_intersect">
+                    <div class="row row-grid" id="intersect_div">
+                    <div class="col-lg-12">
+                        <img src="{{ start_plot }}" style="width:100%;height:100%;padding:1px;border:thin solid black;">
+                    </div>
+
+                </div>
+                </div>
+
+                <br>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p style="text-align: center;"> <a href="javascript:void(0)"  data-toggle="modal" data-target="#intersectModal" style="text-align: center;">  View large <i class="fa fa-search-plus fa-fw"></i></a></p>
+
+                    </div>
+
+                </div>
+
                 <div class="col-lg-12">
 {#                    <iframe src="{{ start_plot }}" width="500" height="500" allowfullscreen></iframe>#}
+
+                        {#                                View large DE table modal             #}
+
+                <style>
+
+                    .modal {
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                      left: 0;
+                      overflow: hidden;
+                      refresh: true;
+
+                    }
+
+                    .modal-dialog {
+                      position: fixed;
+                        max-width: 100%;
+                      margin: 0;
+                      width: 100%;
+                      height: 100%;
+                      padding: 0;
+                    }
+
+                    .modal-content {
+                      position: absolute;
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                      left: 0;
+                      border: 2px solid #3c7dcf;
+                      border-radius: 0;
+                      box-shadow: none;
+                    }
+                </style>
+
+
+                    <div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel"></h4>
+                      </div>
+                      <div class="modal-body">
+                        this is modal 1
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+{#                        <button type="button" class="btn btn-primary">Save changes</button>#}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                    {#               End of View large DE table modal                  #}
+
+                    <div class="modal fade" id="intersectModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel2"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row row-grid">
+                            <div class="col-lg-2">
+                            </div>
+                            <div class="col-lg-10" >
+                                <div id="#intersect_div2">
+                                    <img src="{{ start_plot }}" style="width:90%;padding:1px;border:thin solid black;">
+                                </div>
+
+                            </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+{#                        <button type="button" class="btn btn-primary">Save changes</button>#}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
 
                 </div>
@@ -121,6 +248,26 @@
               </div>
             </div>
                 </div>
+                        <br>
+
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                    <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Visualisations of consensus differentially expressed genes</h6>
+                </div>
+                <div class="card-body">
+                    <iframe src="{{ start_plot }}" width="100%" height="500" allowfullscreen></iframe>
+                </div>
+                    </div>
+                    </div>
+
+
+
+                </div>
+
                 </div>
 {#            end of first tab#}
 
@@ -136,7 +283,7 @@
                         <p>Individual</p>
                 </div>
         </div>
-        </div>
+
 
     </div>
 {% endblock %}
@@ -179,19 +326,93 @@ function showButton(element){
 
     <script>
     $("#id_plot_type").change(function () {
-      var test_string = $(this).val();
+      var plot = $(this).val();
+
       $.ajax({
         url: '{% url "ajax_graph" %}',
         data: {
-          'test_string': test_string
+          'plot': plot,
+            "id" : "{{ job_id }}"
         },
         dataType: 'json',
         success: function (data) {
-          alert(data.path)
+
+            $("#intersect_div").html(data.div_content);
+            $("#intersect_div2").html(data.div_content);
+
         }
       });
 
     });
   </script>
+
+<script>
+$(document).ready(function(){
+
+  $("#intersectModal").on('show.bs.modal', function(){
+    {#$("#intersect_div2").html($("#intersect_div").html)#}
+      $("#intersectModal").removeData();
+      {#alert("yes");#}
+      var a = $('#outside_intersect').html();
+      $('.modal-body').html('<div class="row row-grid">\n' +
+          '                            <div class="col-lg-2">\n' +
+          '                            </div>\n' +
+          '                            <div class="col-lg-9" >' + a + '</div>\n' +
+          '                        </div>');
+
+  });
+});
+
+
+</script>
+
+<script>
+    function recalculateDE() {
+        var FC = $('#id_FC').val();
+        var pval = $('#id_pval').val();
+        var iset = $('#id_set').val();
+        var methods = $('input[name="method"]').map(function(){
+            if (this.checked){
+                return this.id;
+            }}).get();
+
+        $.ajax({
+        url: '{% url "ajax_recalc" %}',
+        {#type: 'POST',#}
+        data: {
+            'FC': FC,
+            'pval': pval,
+            'methods': methods.toString(),
+            'set': iset,
+            "id" : "{{ job_id }}",
+
+        },
+        dataType: 'json',
+        success: function (data) {
+
+            alert("hey hey hey");
+
+            $("#intersect_div").html($("#intersect_div").html());
+            {#$("#intersect_div2").html(data.div_content);#}
+
+        }
+      });
+
+
+            }
+
+
+    $("#id_set").change(function () {
+        recalculateDE();
+    })
+    $('input[name="method"]').change(function () {
+        recalculateDE();
+    })
+    $('input[name="threshold"]').change(function () {
+        recalculateDE();
+    })
+
+
+</script>
 
 {% endblock %}
