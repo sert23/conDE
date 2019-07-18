@@ -129,7 +129,7 @@ def draw_plots(path_to_config):
         exit_codes = [p.wait() for p in wait_list]
     folders = path_to_config.split("/")
     temp = "/".join(folders[:-1])
-    with open(os.path.join(temp,"temp")) as tmp:
+    with open(os.path.join(temp,"temp"),"w") as tmp:
         tmp.write(" ".join(call_list))
 
 
