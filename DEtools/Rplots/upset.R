@@ -1,6 +1,8 @@
 library(UpSetR)
 library(rjson)
 
+args <- commandArgs(TRUE)
+
 # json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA88/config.json")
 json_data <- fromJSON(file=args[1])
 methods <- json_data[["methods"]]
