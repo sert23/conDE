@@ -7,9 +7,10 @@ args <- commandArgs(TRUE)
 json_data <- fromJSON(file=args[1])
 methods <- json_data[["methods"]]
 folder <- json_data[["folder"]]
-FC <- json_data[["FC"]]
-pval <- json_data[["pval"]]
+FC <- as.numeric(json_data[["FC"]])
+pval <- as.numeric(json_data[["pval"]])
 oset <- json_data[["set"]]
+
 
 select_genes <- function(ifile, FC, pval, outset ){
   
