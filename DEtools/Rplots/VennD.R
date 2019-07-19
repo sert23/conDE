@@ -1,5 +1,6 @@
 library(venn)
 library(rjson)
+library(Cairo)
 
 args <- commandArgs(TRUE)
 x11 = function (...) grDevices::x11(...,type='cairo')
@@ -50,7 +51,8 @@ for (method in methods) {
 }
 
 out_path <- paste(folder,"plots","Venn.jpg", sep="/")
-jpeg(out_path, width = 8, height = 5, units = 'in', res = 300)
+CairoJPEG(out_path, width = 8, height = 5, units = 'in', res = 300)
+# jpeg(out_path, width = 8, height = 5, units = 'in', res = 300)
 venn(l,ilab=TRUE, zcolor = "style")
 zeroset <- matrix(1000*c(0,1,1,0,0,0,0,1,1,0), ncol = 2)
 lines(zeroset, col='white', lwd=5)
