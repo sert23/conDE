@@ -143,7 +143,7 @@ def get_plot_content(request):
     plot_path = os.path.join(MEDIA_ROOT,id,"plots",plot+".jpg")
     if os.path.exists(plot_path):
         media_plot = plot_path.replace(MEDIA_ROOT,MEDIA_URL)
-        div_content = ' <div class="col-lg-12"> <img src="' + media_plot + '?'+ str(randrange(500)) +'" style="width:100%;height:100%;padding:1px;border:thin solid black;">  </div> '
+        div_content = ' <div class="col-lg-12"> <img src="' + media_plot + '?'+ str(randrange(500)) +'" id="img_inter" style="width:100%;height:100%;padding:1px;border:thin solid black;">  </div> '
     else:
         div_content = '<iframe style="border-style:solid;" src='+ os.path.join(MEDIA_ROOT,id,"plots","BarPlot.html").replace(MEDIA_ROOT,MEDIA_URL)  +' width="100%" height="500" allowfullscreen></iframe>'
 
