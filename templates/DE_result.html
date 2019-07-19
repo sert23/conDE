@@ -383,7 +383,7 @@ $(document).ready(function(){
 
         {#var image_div = $('#img_inter');#}
         var image_div = $('#intersect_div');
-        image_div.fadeOut(1000);
+        image_div.fadeOut(2000);
         var FC = $('#id_FC').val();
         var pval = $('#id_pval').val();
         var iset = $('#id_set').val();
@@ -411,6 +411,7 @@ $(document).ready(function(){
 
 
             {#alert("refresh");#}
+            image_div.stop();
             image_div.fadeIn(10);
             setTimeout(function(){
                 if (plot==="Barplot"){
