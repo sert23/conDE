@@ -407,12 +407,11 @@ $(document).ready(function(){
 
             {#alert("hey hey hey");#}
 
-            {#$("#intersect_div").html($("#intersect_div").html());#}
+
             {#alert("refresh");#}
             image_div.fadeIn(1);
-            {#refresh_image("img_inter");#}
-
-
+            refresh_image("img_inter");
+            $("#intersect_div").html($("#intersect_div").html());
             {#$("#intersect_div2").html(data.div_content);#}
 
         }
