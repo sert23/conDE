@@ -411,8 +411,6 @@ $(document).ready(function(){
 
 
             {#alert("refresh");#}
-            image_div.stop();
-            image_div.fadeIn(10);
             setTimeout(function(){
                 if (plot==="Barplot"){
                     $("#intersect_div").html($("#intersect_div").html());
@@ -420,6 +418,9 @@ $(document).ready(function(){
                     refresh_image("img_inter");
                 }
             }, 50);
+            image_div.stop();
+            image_div.fadeIn(10);
+
             {#$("#intersect_div2").html(data.div_content);#}
         }
       });
