@@ -2,6 +2,8 @@ library(venn)
 library(rjson)
 
 args <- commandArgs(TRUE)
+x11 = function (...) grDevices::x11(...,type='cairo')
+
 
 # json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA88/config.json")
 json_data <- fromJSON(file=args[1])
