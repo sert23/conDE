@@ -411,9 +411,10 @@ $(document).ready(function(){
             {#alert("refresh");#}
             image_div.fadeIn(10);
             setTimeout(function(){
-            refresh_image("img_inter");
             $("#intersect_div").html($("#intersect_div").html());
-            }, 100);
+            refresh_image("img_inter");
+
+            }, 50);
 
             {#$("#intersect_div2").html(data.div_content);#}
 
