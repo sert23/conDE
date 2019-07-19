@@ -1,5 +1,7 @@
 library(UpSetR)
 library(rjson)
+library(Cairo)
+
 
 args <- commandArgs(TRUE)
 
@@ -47,6 +49,7 @@ for (method in methods) {
 }
 
 out_path <- paste(folder,"plots","UpSet.jpg", sep="/")
-jpeg(out_path, width = 8, height = 5, units = 'in', res = 300)
+CairoJPEG(out_path, width = 8, height = 5, units = 'in', res = 300)
+# jpeg()
 upset(fromList(l), nsets = length(methods),sets.bar.color = "#56B4E9", order.by = "freq")
 dev.off()
