@@ -406,21 +406,15 @@ $(document).ready(function(){
         },
         dataType: 'json',
         success: function (data) {
-
-            {#alert("hey hey hey");#}
-
-
-            {#alert("refresh");#}
+            image_div.stop();
             setTimeout(function(){
                 if (plot==="Barplot"){
                     $("#intersect_div").html($("#intersect_div").html());
                 }else{
                     refresh_image("img_inter");
                 }
-            }, 50);
-            image_div.stop();
+            }, 1);
             image_div.fadeIn(10);
-
             {#$("#intersect_div2").html(data.div_content);#}
         }
       });
