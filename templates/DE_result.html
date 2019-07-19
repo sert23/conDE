@@ -402,10 +402,10 @@ $(document).ready(function(){
         dataType: 'json',
         success: function (data) {
 
-            alert("hey hey hey");
+            {#alert("hey hey hey");#}
 
             $("#intersect_div").html($("#intersect_div").html());
-            alert("refresh");
+            {#alert("refresh");#}
             refresh_image("img_inter");
 
             {#$("#intersect_div2").html(data.div_content);#}
