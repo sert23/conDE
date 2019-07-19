@@ -382,8 +382,8 @@ $(document).ready(function(){
     function recalculateDE() {
 
         var image_div = $('#img_inter');
-        image_div.fadeOut(300);
-
+        image_div.fadeOut(5000);
+        alert("hey");
         var FC = $('#id_FC').val();
         var pval = $('#id_pval').val();
         var iset = $('#id_set').val();
@@ -411,6 +411,7 @@ $(document).ready(function(){
             $("#intersect_div").html($("#intersect_div").html());
             {#alert("refresh");#}
             refresh_image("img_inter");
+            image_div.fadeIn();
 
             {#$("#intersect_div2").html(data.div_content);#}
 
