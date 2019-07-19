@@ -386,6 +386,7 @@ $(document).ready(function(){
         var FC = $('#id_FC').val();
         var pval = $('#id_pval').val();
         var iset = $('#id_set').val();
+        var plot = $('#id_plot_type').val();
         var methods = $('input[name="method"]').map(function(){
             if (this.checked){
                 return this.id;
@@ -411,13 +412,13 @@ $(document).ready(function(){
             {#alert("refresh");#}
             image_div.fadeIn(10);
             setTimeout(function(){
-            $("#intersect_div").html($("#intersect_div").html());
-            refresh_image("img_inter");
-
+                if (plot==="Barplot"){
+                    $("#intersect_div").html($("#intersect_div").html());
+                }else{
+                    refresh_image("img_inter");
+                }
             }, 50);
-
             {#$("#intersect_div2").html(data.div_content);#}
-
         }
       });
 
