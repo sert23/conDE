@@ -21,10 +21,10 @@ select_genes <- function(ifile, FC, pval, outset ){
     FC<- 1/FC
   }
   sbs <- subset(df, (df$pvalue < pval ) & ((df$FoldChange>FC)|(df$FoldChange<1/FC)))
-  if (outset=="under"){
+  if (outset=="Under"){
     sbs<-subset(sbs, (df$FoldChange < 1 ) )
   }
-  if (outset=="over"){
+  if (outset=="Over"){
     sbs<-subset(sbs, (df$FoldChange > 1 ) )
   }
   return(sbs$name)
