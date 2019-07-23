@@ -1,7 +1,7 @@
 library("heatmaply")
 library("RColorBrewer")
 library("edgeR")
-
+library("rjson")
 
 ### Notes: Script arguments: 1) <input matrix>.mat 2) <cs list of the groups> 3) path/to/project_folder 4) baseName 5) percentage/top_n_genes 6) title of heatmap within quotation marks
 ### Example Command: Rscript visualisation.R matfile.mat cell,cell,cell,exosomes,exosomes,exosomes /projects/project_name mature_sense_minExpr5_RCadj 0.1 "Top Genes"
