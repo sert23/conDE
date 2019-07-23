@@ -123,8 +123,15 @@ function showTab(element)  {
         success: function (data) {
             alert(data.test);
             image_div.stop();
+            setTimeout(function(){
+                $("#hm_div").html($("#hm_div").html());
+                }
+                , 1);
+            image_div.fadeIn(10);
 
-            $("#hm_div").html($("#hm_div").html());
+
+
+
             }
       });
             }
