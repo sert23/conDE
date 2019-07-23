@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Results for your job: {{ job_id }}</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <br>
+                 <div class="card shadow">
+                <div class="card-header py-12">
+                  <h6 class="m-0 font-weight-bold text-primary">Title and groups</h6>
+
+
+                </div>
+                <div class="card-body">
+                        <div class="row">
+                        <div class="col-lg-6">
+                            <label for="id_FC" class="control-label ">
+                    Title:
+                    </label>  <input type="text" value="" id="id_title" name="parameter" size="30" style="padding-right: 8px;"/>
+                        </div>
+
+                    </div>
+                </div>
+
+              </div>
+                </div>
+            </div>
+        <br>
+
+            <div class="row">
+                <div class="col-lg-3">
+
+                    <div class="card shadow">
+                <div class="card-header py-12">
+                  <h6 class="m-0 font-weight-bold text-primary">Parameters</h6>
+                </div>
+                <div class="card-body">
+                        <div class="row">
+                        <div class="col-lg-12">
+                            <label for="id_FC" class="control-label ">
+                    Number of genes: </label>  <input type="text" name="parameter" value="" id="id_max" size="4" style="padding-right: 1px;"/>
+                        </div>
+
+                    </div>
+                </div>
+
+              </div>
+
+                </div>
+                <div class="col-lg-9" id="hm_div">
+                <iframe src="{{ heatmap_url }}" width="100%" height="800" allowfullscreen></iframe>
+            </div>
+            </div>
+
+        <br>
+
+
+
+
+
+    </div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+        function refresh_image(img_id) {
+    var old_source = document.getElementById(img_id).src,
+        timestamp = (new Date()).getTime(),
+        newUrl = old_source + '?_=' + timestamp;
+
+    document.getElementById(img_id).src =  newUrl;
+}
+
+    </script>
+
+    <script>
+function showTab(element)  {
+    var tabContents = document.getElementsByClassName('tab-pane');
+    for (var i = 0; i < tabContents.length; i++) {
+        tabContents[i].style.display = 'none';
+    }
+    // change tabsX into tabs-X in order to find the correct tab content
+    document.getElementById(element).style.display = 'block';
+    {#alert(element);#}
+    return true;
+}
+
+    </script>
+
+    <script src="{% static 'js/jquery-3.1.0.min.js'%}"></script>
+
+
+
+
+<script>
+    function updatePlot() {
+        alert("eo");
+
+        $.ajax({
+        url: '{% url "hm_recalc" %}',
+        {#type: 'POST',#}
+        data: {
+            'title': $('#id_title').val(),
+            {#'pval': pval,#}
+            {#'methods': methods.toString(),#}
+            {#'set': iset,#}
+            "id" : "{{ job_id }}",
+
+        },
+        dataType: 'json',
+        success: function (data) {
+            alert(data.test);
+            $("#hm_div").html($("#hm_div").html());
+            }
+      });
+            }
+
+    $('input[name="parameter"]').change(function () {
+        updatePlot();
+    })
+
+
+
+</script>
+
+{% endblock %}
