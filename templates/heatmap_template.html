@@ -106,7 +106,8 @@ function showTab(element)  {
 <script>
     function updatePlot() {
         alert("eo");
-
+        var image_div = $('#hm_div');
+        image_div.fadeOut(5000);
         $.ajax({
         url: '{% url "hm_recalc" %}',
         {#type: 'POST',#}
@@ -121,6 +122,8 @@ function showTab(element)  {
         dataType: 'json',
         success: function (data) {
             alert(data.test);
+            image_div.stop();
+
             $("#hm_div").html($("#hm_div").html());
             }
       });
