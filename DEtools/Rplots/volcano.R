@@ -246,15 +246,8 @@ volcanoly.volcanor <- function(x,
 }
  }
 
-p<-volcanoly2(HapMap, snp = "SNP", gene="GENE")
-library(htmlwidgets)
-saveWidget(p, "test.html")
-
-quit()
-
-
-json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json")
-# json_data <- fromJSON(file=args[1])
+#json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json")
+json_data <- fromJSON(file=args[1])
 matfile <- read.delim(json_data[["input_matrix"]], header=TRUE, row.names=1)   # Input the input delimited text file containing the count matrix
 groups <- unlist(strsplit( json_data[["matrixDesc"]], ","))  # Sample description
 sampletypevalues <- rev(unique(groups))  # Getting the group levels
@@ -300,12 +293,10 @@ if(json_data[["folder"]] == "Average"){
 colnames(matfile) = gsub("log2FoldChange","EFFECTSIZE",  colnames(matfile))
 matfile$name<- rownames(matfile)
 matfile$gene<- rownames(matfile)
-matfile$gene2<- rownames(matfile)
-volcano_obj<-volcanor(matfile,p="pvalue", snp= "name", gene="gene")
+matfile$GENE<- rownames(matfile)
+volcano_obj<-volcanor(matfile,p="pvalue", snp= "name", gene="GENE")
 
-volcanoly(volcano_obj, title=volcano_title, gene="gene", 
-             effect_size_line=c(-2,2), genomewideline=-log10(1e-3), xlab = "log2(Fold Change)",annotation1="gene2")
-volcanoly(HapMap, snp = "SNP", gene = "GENE", highlight = HapMap$SNP)
+p<-volcanoly2(volcano_obj, title=volcano_title, gene="GENE", 
+             effect_size_line=c(-2,2), genomewideline=-log10(1e-3), xlab = "log2(Fold Change)")
 
-library(htmlwidgets)
-saveWidget(p, "/Users/ernesto/test.html")
+htmlwidgets::saveWidget(p, paste(outdir,"volcano.html",sep="/"))
