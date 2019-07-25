@@ -109,7 +109,7 @@ function showTab(element)  {
         var image_div = $('#hm_div');
         image_div.fadeOut(5000);
         $.ajax({
-        url: '{% url "hm_recalc" %}',
+        url: '{% url "volc_recalc" %}',
         {#type: 'POST',#}
         data: {
             'title': $('#id_title').val(),
