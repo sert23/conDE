@@ -85,7 +85,7 @@ class Volcano(FormView):
 
 
 
-        return render(self.request, 'heatmap_template.html',
+        return render(self.request, 'volcano.html',
                       {"job_id": folder,
                        "volcano_url": volcano_url
                        })
