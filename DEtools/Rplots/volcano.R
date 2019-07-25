@@ -246,6 +246,7 @@ volcanoly.volcanor <- function(x,
 }
  }
 
+args <- commandArgs(TRUE)
 #json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json")
 json_data <- fromJSON(file=args[1])
 matfile <- read.delim(json_data[["input_matrix"]], header=TRUE, row.names=1)   # Input the input delimited text file containing the count matrix
