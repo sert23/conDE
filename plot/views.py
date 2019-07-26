@@ -17,7 +17,7 @@ def random_redirect(request):
 
 def make_random_url(id,plot):
     random_url = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-    url = os.path.join(SUB_SITE,"plot",random_url)
+    url = os.path.join(SUB_SITE,"plot","random",random_url)
     return url+"?plot=" + plot + "&id=" + id
 
 
