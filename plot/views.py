@@ -1,18 +1,26 @@
 from django.shortcuts import render, redirect
-from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH
+from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH, SUB_SITE
 import pandas as pd
 import os
 from django.http import JsonResponse
 # Create your views here.
 from django.views.generic import FormView, DetailView
 import json
-
+import random
+import string
 
 
 def random_redirect(request):
     id = request.GET.get('id', None)
     plot = request.GET.get('plot', None)
     return(redirect(os.path.join(MEDIA_URL,id,plot)))
+
+def make_random_url(id,plot):
+    random_url = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    url = os.path.join(SUB_SITE,random_url)
+    return url+"?plot=" + plot + "&id=" + id
+
+
 
 def heatmap_recalculate(request):
     id = request.GET.get('id', None)
@@ -44,7 +52,11 @@ def volcano_recalculate(request):
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "volcano.R"), path_to_config]
     os.system(" ".join(call_list))
-    return JsonResponse({"test":"ejejhe"})
+    return JsonResponse( {"new_url" : make_random_url(id,"volcano.html")
+
+    }
+
+    )
 
 
 class Heatmap(FormView):
@@ -86,7 +98,7 @@ class Volcano(FormView):
     def get(self, request,**kwargs):
         path = request.path
         folder = path.split("/")[-1]
-        volcano_url = os.path.join(MEDIA_URL,folder,"volcano.html")
+        volcano_url = make_random_url(folder,"volcano.html")
 
 
 
