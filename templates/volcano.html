@@ -124,9 +124,10 @@ function showTab(element)  {
             alert(data.test);
             image_div.stop();
             setTimeout(function(){
-                {#$("#hm_div").html($("#hm_div").html());#}
+
                 var iFrame = $('#volcano');
                 iFrame.load(data.new_url);
+                $("#hm_div").html($("#hm_div").html());
 
                 }
                 , 1);
