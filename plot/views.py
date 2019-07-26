@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH
 import pandas as pd
 import os
@@ -8,6 +8,11 @@ from django.views.generic import FormView, DetailView
 import json
 
 
+
+def random_redirect(request):
+    id = request.GET.get('id', None)
+    plot = request.GET.get('plot', None)
+    redirect(MEDIA_URL,id,plot)
 
 def heatmap_recalculate(request):
     id = request.GET.get('id', None)
