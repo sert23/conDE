@@ -12,7 +12,7 @@ import json
 def random_redirect(request):
     id = request.GET.get('id', None)
     plot = request.GET.get('plot', None)
-    return(redirect(MEDIA_URL,id,plot))
+    return(redirect(os.path.join(MEDIA_URL,id,plot)))
 
 def heatmap_recalculate(request):
     id = request.GET.get('id', None)
