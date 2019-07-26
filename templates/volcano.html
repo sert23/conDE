@@ -58,7 +58,7 @@
 
                 </div>
                 <div class="col-lg-9" id="hm_div">
-                <iframe src="{{ volcano_url }}" width="100%" height="800" allowfullscreen></iframe>
+                <iframe src="{{ volcano_url }}" width="100%" height="800" id="volcano" allowfullscreen></iframe>
             </div>
             </div>
 
@@ -124,7 +124,10 @@ function showTab(element)  {
             alert(data.test);
             image_div.stop();
             setTimeout(function(){
-                $("#hm_div").html($("#hm_div").html());
+                {#$("#hm_div").html($("#hm_div").html());#}
+                var iFrame = $('#volcano');
+                iFrame.load(data.new_url);
+
                 }
                 , 1);
             image_div.fadeIn(10);
