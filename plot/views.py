@@ -21,6 +21,9 @@ def make_random_url(id,plot):
     # return url+"?plot=" + plot + "&id=" + id
     return os.path.join(MEDIA_URL,id,plot+"?var="+random_url)
 
+def rnd_str():
+    return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
 
 
 def heatmap_recalculate(request):
@@ -43,21 +46,25 @@ def volcano_recalculate(request):
     id = request.GET.get('id', None)
     folder = os.path.join(MEDIA_ROOT, id)
     path_to_config = os.path.join(folder, "plot_config.json")
+
+    new_outdir = os.path.join(folder,"volcano",rnd_str())
+    os.mkdir(new_outdir)
     with open(path_to_config) as f:
         config = json.load(f)
 
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
+    config.update({"outdir":new_outdir})
     with open(path_to_config, 'w') as f:
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "volcano.R"), path_to_config]
     os.system(" ".join(call_list))
-    return JsonResponse( {"new_url" : make_random_url(id,"volcano.html")
+    return JsonResponse( {"new_url" : new_outdir.replace(MEDIA_ROOT,MEDIA_URL)
 
-    }
+                          })
 
-    )
+
 
 
 class Heatmap(FormView):
