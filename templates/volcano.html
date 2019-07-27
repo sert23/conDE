@@ -121,12 +121,14 @@ function showTab(element)  {
         },
         dataType: 'json',
         success: function (data) {
-            alert(data.test);
+            alert(data.new_url);
             image_div.stop();
             setTimeout(function(){
 
                 var iFrame = $('#volcano');
-                iFrame.load(data.new_url);
+                {#iFrame.load(data.new_url);#}
+                iFrame.attr('src', source);
+
                 {#$("#hm_div").html($("#hm_div").html());#}
 
                 }
