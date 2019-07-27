@@ -55,7 +55,7 @@ def volcano_recalculate(request):
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
-    config.update({"outdir":new_outdir})
+    config.update({"folder":new_outdir})
     with open(path_to_config, 'w') as f:
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "volcano.R"), path_to_config]
