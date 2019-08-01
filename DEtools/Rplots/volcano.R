@@ -261,6 +261,14 @@ top_n <- as.numeric(json_data[["top_n"]])  # Cutoff for plotting top genes
 volcano_title <- json_data[["title"]]
 pval <- as.numeric(json_data[["pval"]])
 
+if (is.na(FC)){
+  FC<-1
+}
+
+if (is.na(pval)){
+  pval<-0.001
+}
+
 FC_vector <- c(-abs(FC),abs(FC))
 log10pval <- -log10(pval)
 
