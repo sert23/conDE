@@ -214,9 +214,9 @@ volcanoly.volcanor <- function(x,
         if (length(highlight_index)>0) {
           
           d.highlight <- d[highlight_index, ] 
-          
+          # print(d$P)
           TEXT <- paste0("log2(FoldChange):",d$EFFECTSIZE,"<br>", 
-                         "-log10(pval):",d$LOG10P, "<br>","name:", d$GENE , sep = " ")
+                         "p-value:",d$P, "<br>","name:", d$GENE , sep = " ")
           
           p %<>% plotly::add_trace(x = d$EFFECTSIZE, y = d$LOG10P,
                                    type = "scatter",
@@ -226,7 +226,7 @@ volcanoly.volcanor <- function(x,
                                                  size = point_size),
                                    name = "")
           TEXT <- paste0("log2(FoldChange):",d.highlight$EFFECTSIZE,"<br>", 
-                         "-log10(pval):",d.highlight$LOG10P, "<br>","name:", d.highlight$GENE,  sep = " ")
+                         "p-value:",d.highlight$P, "<br>","name:", d.highlight$GENE,  sep = " ")
           
           #test1
           p %<>% plotly::add_trace(x = d.highlight$EFFECTSIZE, y = d.highlight$LOG10P,
