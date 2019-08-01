@@ -8,6 +8,7 @@ from django.views.generic import FormView, DetailView
 import json
 import random
 import string
+import shutil
 
 
 def random_redirect(request):
@@ -42,6 +43,7 @@ def heatmap_recalculate(request):
     os.system(" ".join(call_list))
     return JsonResponse({"test":"ejejhe"})
 
+
 def volcano_recalculate(request):
     id = request.GET.get('id', None)
     folder = os.path.join(MEDIA_ROOT, id)
@@ -55,14 +57,19 @@ def volcano_recalculate(request):
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
+    pval = request.GET.get('pval', None)
+    if title:
+        config.update({"pval": pval})
+    FC = request.GET.get('FC', None)
+    if title:
+        config.update({"FC": FC})
     config.update({"folder":new_outdir})
     with open(path_to_config, 'w') as f:
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "volcano.R"), path_to_config]
     os.system(" ".join(call_list))
     return JsonResponse( {"new_url" : os.path.join(new_outdir.replace(MEDIA_ROOT,MEDIA_URL),"volcano.html")
-
-                          })
+                                                                                                        })
 
 
 
@@ -105,10 +112,20 @@ class Volcano(FormView):
 
     def get(self, request,**kwargs):
         path = request.path
+        #get id from link
         folder = path.split("/")[-1]
+        folder_path = os.path.join(MEDIA_ROOT,folder)
+        init_json = os.path.join(folder_path,"init_plot_config.json")
+        current_json = os.path.join(folder_path,"plot_config.json")
+        #copy initial json to "restart" the plot
+        shutil.copy(init_json,current_json)
+        #clear folder of older jobs
+        shutil.rmtree(os.path.join(folder_path,"volcano"))
+        os.mkdir(os.path.join(folder_path,"volcano"))
+        #launch plotting job
+        call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "volcano.R"), current_json]
+        os.system(" ".join(call_list))
         volcano_url = make_random_url(folder,"volcano.html")
-
-
 
         return render(self.request, 'volcano.html',
                       {"job_id": folder,
