@@ -247,7 +247,7 @@ volcanoly.volcanor <- function(x,
  }
 
 args <- commandArgs(TRUE)
-#json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json")
+# json_data <- fromJSON(file="/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json")
 json_data <- fromJSON(file=args[1])
 matfile <- read.delim(json_data[["input_matrix"]], header=TRUE, row.names=1)   # Input the input delimited text file containing the count matrix
 groups <- unlist(strsplit( json_data[["matrixDesc"]], ","))  # Sample description
@@ -258,38 +258,10 @@ descending <- json_data[["descending"]]
 basename <- ""
 top_n <- as.numeric(json_data[["top_n"]])  # Cutoff for plotting top genes
 volcano_title <- json_data[["title"]]
+pval <- as.numeric(json_data[["pval"]])
 
-sort_genes_av <- function(m, desc=TRUE){
-  m1<-m
-  m[c("FoldChange","log2FoldChange","pvalue","padj")]<-NULL
-  if (desc){
-    return(m1[ order(-rowMeans(m)), ])
-  }else{
-    return(m1[ order(rowMeans(m)), ])
-  }
-}
-
-sort_genes_cv <- function(m, desc=TRUE){
-  m1=m
-  m[c("FoldChange","log2FoldChange","pvalue","padj")]<-NULL
-  if (desc){
-    m = m1[order(-apply(m, 1, function(x) sd(x)/mean(x))),]
-    return(m)
-  }else{
-    m = m1[order(-apply(m, 1, function(x) sd(x)/mean(x))),]
-    return(m)
-  }
-}
-
-if(json_data[["folder"]] == "Average"){
-  m<-sort_genes_av(matfile, descending)
-}else if(json_data[["folder"]] == "CV"){
-  m<-sort_genes_cv(matfile, descending)
-  m[c("FoldChange","log2FoldChange","pvalue","padj")]<-matfile[c("FoldChange","log2FoldChange","pvalue","padj")]
-}else{
-  m<-matfile
-  
-}
+FC_vector <- c(-abs(FC),abs(FC))
+log10pval <- -log10(pval)
 
 colnames(matfile) = gsub("log2FoldChange","EFFECTSIZE",  colnames(matfile))
 matfile$name<- rownames(matfile)
@@ -298,6 +270,6 @@ matfile$GENE<- rownames(matfile)
 volcano_obj<-volcanor(matfile,p="pvalue", snp= "name", gene="GENE")
 
 p<-volcanoly2(volcano_obj, title=volcano_title, gene="GENE", 
-             effect_size_line=c(-2,2), genomewideline=-log10(1e-3), xlab = "log2(Fold Change)")
+             effect_size_line=FC_vector, genomewideline=log10pval, xlab = "log2(Fold Change)")
 
 htmlwidgets::saveWidget(p, paste(outdir,"volcano.html",sep="/"))
