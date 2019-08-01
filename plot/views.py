@@ -49,6 +49,9 @@ def volcano_recalculate(request):
     folder = os.path.join(MEDIA_ROOT, id)
     path_to_config = os.path.join(folder, "plot_config.json")
 
+    shutil.rmtree(os.path.join(folder, "volcano"))
+    os.mkdir(os.path.join(folder, "volcano"))
+
     new_outdir = os.path.join(folder,"volcano",rnd_str())
     os.mkdir(new_outdir)
     with open(path_to_config) as f:
