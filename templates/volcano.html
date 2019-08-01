@@ -17,14 +17,14 @@
                     <br>
                  <div class="card shadow">
                 <div class="card-header py-12">
-                  <h6 class="m-0 font-weight-bold text-primary">Title and groups</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Titles</h6>
 
 
                 </div>
                 <div class="card-body">
                         <div class="row">
                         <div class="col-lg-6">
-                            <label for="id_FC" class="control-label ">
+                            <label for="id_title" class="control-label ">
                     Title:
                     </label>  <input type="text" value="" id="id_title" name="parameter" size="30" style="padding-right: 8px;"/>
                         </div>
@@ -45,18 +45,21 @@
                   <h6 class="m-0 font-weight-bold text-primary">Parameters</h6>
                 </div>
                 <div class="card-body">
-                        <div class="row">
-                        <div class="col-lg-12">
-                            <label for="id_pval" class="control-label ">
-                    p-value threshold: </label>  <input type="text" name="parameter" value="" id="id_pval" size="4" style="padding-right: 1px;"/>
-                        </div>
-                    </div>
+
                     <div class="row">
                         <div class="col-lg-12">
                             <label for="id_FC" class="control-label ">
                     Log2(FC) threshold </label>  <input type="text" name="parameter" value="" id="id_FC" size="4" style="padding-right: 1px;"/>
                         </div>
                     </div>
+
+                        <div class="row">
+                        <div class="col-lg-12">
+                            <label for="id_pval" class="control-label ">
+                    p-value threshold: </label>  <input type="text" name="parameter" value="" id="id_pval" size="4" style="padding-right: 1px;"/>
+                        </div>
+                    </div>
+
 
                 </div>
 
@@ -119,6 +122,8 @@ function showTab(element)  {
         {#type: 'POST',#}
         data: {
             'title': $('#id_title').val(),
+            'pval': $('#id_pval').val(),
+            'FC': $('#id_FC').val(),
             {#'pval': pval,#}
             {#'methods': methods.toString(),#}
             {#'set': iset,#}
