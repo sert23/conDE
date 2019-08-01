@@ -269,7 +269,8 @@ matfile$name<- rownames(matfile)
 matfile$gene<- rownames(matfile)
 matfile$GENE<- rownames(matfile)
 volcano_obj<-volcanor(matfile,p="pvalue", snp= "name", gene="GENE")
-
+print("FC_vector")
+print(FC_vector)
 p<-volcanoly2(volcano_obj, title=volcano_title, gene="GENE", 
              effect_size_line=FC_vector, genomewideline=log10pval, xlab = "log2(Fold Change)")
 
