@@ -67,7 +67,7 @@
 
                 </div>
                 <div class="col-lg-9" id="hm_div">
-                <iframe src="{{ volcano_url }}" width="100%" height="800" id="volcano" allowfullscreen></iframe>
+                <iframe src="{{ volcano_url }}" width="100%" height="800" id="volcano" style="border:2px solid;" allowfullscreen></iframe>
             </div>
             </div>
 
@@ -114,7 +114,7 @@ function showTab(element)  {
 
 <script>
     function updatePlot() {
-        alert("eo");
+        {#alert("eo");#}
         var image_div = $('#hm_div');
         image_div.fadeOut(5000);
         $.ajax({
@@ -132,7 +132,7 @@ function showTab(element)  {
         },
         dataType: 'json',
         success: function (data) {
-            alert(data.new_url);
+            {#alert(data.new_url);#}
             image_div.stop();
             setTimeout(function(){
 
