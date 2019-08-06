@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block header %}
+    <link href="{% static  'select2/select2.min.css'%}" rel="stylesheet" />
+    <script src="{% static  'select2/select2.min.js'%}" defer></script>
+
+    <style>
+
+    .select2-results__option[aria-selected=true] {
+    display: none;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Assign samples to conditions</h6>
+                </div>
+{#            <form enctype="multipart/form-data" id="id_form" method="POST" name='csrfmiddlewaretoken' value="getCookie('csrftoken');">#}
+                <form  method="post"  enctype="multipart/form-data">
+                    <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}' />
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <input type='hidden' id="id_group1" name="id_group1" value="hehe"/>
+
+                            <h6 class="m-0 font-weight-bold text-primary">{{ group1 }}</h6>
+                            <select id="group1" class="group1" multiple="multiple">
+                                {% for value in header_list %}
+                    <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                </select>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <input type='hidden' id="id_group2" name="id_group2" value="hehe"/>
+                            <h6 class="m-0 font-weight-bold text-primary">{{ group2 }}</h6>
+                            <select id="group2" class="group2" multiple="multiple">
+                    {% for value in header_list %}
+                    <option value="{{ value }}">{{ value }}</option>
+                        {% endfor %}
+                </select>
+                        </div>
+
+                    </div>
+                <br>
+                <div class="row">
+                    <div class="col-lg-10"></div>
+                    <div class="col-lg-2">
+                        <input type="submit" id="submit_button" style="display: none" />
+                        <button type="button"  id="groups_button" class="btn btn-primary" onclick="$('#submit_button').click();"> Launch DE</button>
+                    </div>
+                </div>
+
+
+                </div>
+            </form>
+              </div>
+
+
+
+                <h1 class="page-header"></h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    </div>
+
+
+    <script>
+    $(document).ready(function() {
+        $('#group1').on('change', function () {
+            $('#id_group1').val($('#group1').val());
+
+
+        });
+        $('#group2').on('change', function () {
+            $('#id_group2').val($('#group2').val());
+
+
+        });
+    });
+    </script>
+
+
+<script>
+
+    function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+        }
+          return cookieValue;
+            }
+        var csrftoken = getCookie('csrftoken');
+
+</script>
+
+<script>
+$(document).ready(function() {
+    $('.group1').select2({
+        width: "100%",
+        templateSelection: function (data, container) {
+            {#console.log(">>Selection", data);#}
+            $(container).css("background-color", "#801717");
+            $(container).css("color", "#f8f8ff");
+            return data.text;
+        }
+    });
+    $('.group2').select2({
+        width: "100%",
+        templateSelection: function (data, container) {
+            {#console.log(">>Selection", data);#}
+            $(container).css("background-color", "#326332");
+            $(container).css("color", "#f8f8ff");
+            return data.text;
+        }
+    });
+
+
+});
+</script>
+
+<script>
+{#         Preparing dropdown 1     #}
+$(document).ready(function() {
+    $(".group1").on("select2:select", function (evt) {
+    var element = evt.params.data.element;
+    var $element = $(element);
+
+    $element.detach();
+    $(this).append($element);
+        $(this).trigger("change");
+        var to_rem = $(this).find(':selected:last').val();
+        var rem_text = `option[value='${to_rem}']`;
+        {#alert($(this).find(':selected:last').val());#}
+
+        $(".group2").find(rem_text).prop("selected",false);
+            // set the select with value A to unselected
+        $(".group2").trigger("change");
+
+
+                    });
+
+                });
+
+
+
+</script>
+
+<script>
+{#         Preparing dropdown 2     #}
+$(document).ready(function() {
+    $(".group2").on("select2:select", function (evt) {
+    var element = evt.params.data.element;
+    var $element = $(element);
+
+    $element.detach();
+    $(this).append($element);
+        $(this).trigger("change");
+        var to_rem = $(this).find(':selected:last').val();
+        var rem_text = `option[value='${to_rem}']`;
+        {#alert($(this).find(':selected:last').val());#}
+        $(".group1").find(rem_text).prop("selected",false);
+            // set the select with value A to unselected
+        $(".group1").trigger("change");
+
+        {#$("#group2").next(".select2").find("li[title='AL']").remove();#}
+        {#$("#group2").find("option[value='AL']").prop("selected",false);#}
+                    });
+
+                });
+
+
+
+</script>
+
+
+
+{% endblock %}

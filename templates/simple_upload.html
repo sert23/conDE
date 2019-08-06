@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block header %}
+
+
+    <style>
+
+    .select2-results__option[aria-selected=true] {
+    display: none;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+
+{#    <link href="{% static 'css/bootstrap-tagsinput.css' %}" rel="stylesheet" type="text/css">#}
+{#    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>#}
+
+
+
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header"></h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <div class="row">
+                   <div class="col-lg-3">
+
+                   <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Choose input file</h6>
+                </div>
+                <div class="card-body">
+
+                    <form enctype="multipart/form-data"
+                    id="id_ajax_upload_form" method="POST"
+                    novalidate="">
+                        <input type="submit" id="sub_button" style="display:none">
+
+        <div class="form-group">
+
+
+            <input class="form-control-file" id="fileupload" type="file" name="file" onchange="$('#sub_button').click();">
+        </div>
+
+        <input type="hidden" name="separator" id="separator" value="tab" onchange="$('#sub_button').click();">
+        <div id="tab_pars">
+        <div id="input_div">
+        <div class="form-group">
+        <select class="form-control" id="sep_selector" name="parameter">
+          <option value="tab">Tab-delimited</option>
+          <option value="comma">Comma-delimited</option>
+          <option value="semicolon">Semicolon-delimited</option>
+
+        </select>
+        </div>
+
+                        <div class="control-group">
+                            <div class="controls"> <label for="header" class="checkbox ">
+                                <input type="checkbox" name="header" class="checkboxinput" id="header" checked/>
+                        Input has header
+                            </label> </div></div>
+               <div class="control-group">
+                            <div class="controls"> <label for="missing" class="checkbox ">
+                                <input type="checkbox" name="missing" class="checkboxinput" id="missing"  />
+                        First header is missing
+                            </label> </div></div>
+                    </div>
+{#            <div class="form-group"> has header#}
+{#            <input class="form-control" type="checkbox" name="header" value="header">#}
+{#            </div>#}
+            </div>
+
+        <input type="hidden" name="job_id" id="job_id" value="{{ job_id }}">
+
+
+{#       <input type="submit" id="sub_button" style="display:none;">#}
+       <input type='hidden' name='csrfmiddlewaretoken' value="{{ csrf_token }}"}>
+
+
+                </div>
+
+              </div>
+                    <br>
+                   <div class="card shadow" style="display: none" id="groups_div">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Groups names</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row justify-content-md-center">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" name="id_group1" value="Group 1" id="id_group1" size="10" style="padding-right: 1px;"/> <br>
+                    <input type="text" class="form-control" name="id_group2" value="Group 2" id="id_group2" size="10" style="padding-right: 1px;"/>
+                        </div>
+
+                 </div>
+</form>
+
+                </div>
+              </div>
+                       <br>
+                        <div class="row justify-content-md-center">
+                        <div class="col-lg-6">
+                        </div>
+                            <div class="col-lg-3">
+                       <a href="{{ button_link }}"> <button type="button"  id="groups_button" style="display: none" class="btn btn-primary">Continue</button></a>
+
+
+                        </div>
+                        </div>
+
+                   </div>
+
+            <div class="col-lg-9" id="table_right" style="display:none;">
+
+                <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Preview table</h6>
+                </div>
+                <div class="card-body">
+
+                    <div id="table_div" style='overflow-x:scroll;overflow-y:hidden;'>
+
+                    </div>
+
+                </div>
+              </div>
+
+
+
+            </div>
+        </div>
+
+{#        <div class="row">#}
+{##}
+{#            <div class="col-lg-6">#}
+{##}
+{#                <div class="card shadow" id="group1_div">#}
+{#                <div class="card-header py-3">#}
+{#                  <h6 class="m-0 font-weight-bold text-primary">Group 1 Samples</h6>#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                <div class="row">#}
+{#            <div class="col-lg-12">#}
+{#                <select class="group1" name="group1" multiple="multiple">#}
+{#                {% for value in header_list %}#}
+{#                    <option value="{{ value }}">{{ value }}</option>#}
+{#                        {% endfor %}#}
+{#                </select>#}
+{##}
+{#                </div>#}
+{#              </div>#}
+{##}
+{##}
+{##}
+{#                </div>#}
+{#              </div>#}
+{##}
+{#            </div>#}
+{##}
+{#            <div class="col-lg-6">#}
+{##}
+{#                <div class="card shadow" id="group2_div">#}
+{#                <div class="card-header py-3">#}
+{#                  <h6 class="m-0 font-weight-bold text-primary">Group 2 Samples</h6>#}
+{#                </div>#}
+{#                <div class="card-body">#}
+{#                <div class="row">#}
+{#            <div class="col-lg-12">#}
+{#                <select class="group2" name="group2" multiple="multiple">#}
+{#                {% for value in header_list %}#}
+{#                    <option value="{{ value }}">{{ value }}</option>#}
+{#                        {% endfor %}#}
+{#                </select>#}
+{##}
+{##}
+{##}
+{#                </div>#}
+{#              </div>#}
+{##}
+{#            </div>#}
+{##}
+{#        </div>#}
+{##}
+{##}
+{#    </div>#}
+{#        </div>#}
+    </div>
+
+{#   <script#}
+{#   src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>#}
+    <script src="{% static 'js/bootstrap-tagsinput.js' %}"> </script>
+
+    <script>
+    var selector = document.getElementById('tab_pars');
+    selector.style.display = 'none';
+
+    </script>
+
+    <script>
+
+        $("input").on('change', function () {
+            $('#sub_button').click();
+        });
+
+
+
+       function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+        }
+          return cookieValue;
+            }
+        var csrftoken = getCookie('csrftoken');
+       {#alert(csrftoken);#}
+   </script>
+
+    <script>
+        $("#sep_selector").change(function(){
+        $("#separator").val($(this).val());
+        $('#sub_button').click();
+                        });
+    </script>
+
+
+
+   <script >
+    // form upload
+
+
+    {#$("input").change(function() {#}
+        $('#id_ajax_upload_form').submit(function (e) {
+            {#alert("eo");#}
+            $("#table_div").hide();
+
+            e.preventDefault();
+            {#alert(csrftoken);#}
+            $form = $(this);
+            {#xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');#}
+            var formData = new FormData(this);
+            $.ajax({
+                url: window.location.pathname,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                type: 'POST',
+                data: formData,
+                success: function (data) {
+                    $("#table_div").show();
+
+                    {#alert(data.table);#}
+                    $("#table_right").show();
+                    $("#groups_div").show();
+                    $("#table_div").html(data.table);
+                    $("#tab_pars").show();
+                    $("#groups_button").show();
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+
+    // end
+   </script>
+
+
+            {# initialize selector 2   #}
+            <script>
+                $(document).ready(function() {
+                    $('.group2').select2({
+                        width: "100%",
+                        templateSelection: function (data, container) {
+                            {#console.log(">>Selection", data);#}
+                            $(container).css("background-color", "#801717");
+                            $(container).css("color", "#f8f8ff");
+                            return data.text;
+                        }
+                    });
+                });
+            </script>
+
+        {# initialize selector 1   #}
+            <script>
+                $(document).ready(function() {
+                    $('.group1').select2({
+                        width: "100%",
+                        templateSelection: function (data, container) {
+                            {#console.log(">>Selection", data);#}
+                            {#$(container).css("background-color", "#006400");#}
+                            $(container).css("background-color", "#326332");
+                            $(container).css("color", "#f8f8ff");
+                            return data.text;
+                        }
+                    });
+                });
+            </script>
+
+
+
+
+{% endblock %}
