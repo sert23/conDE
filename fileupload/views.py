@@ -261,7 +261,7 @@ class ChooseGroups(FormView):
             json.dump(config_dict, cf)
 
         launch_string = " ".join([PYTHON_PATH,PATH_TO_DE_LAUNCHER, config_path])
-        #os.system(launch_string)
+        os.system(launch_string)
 
         redirection = reverse_lazy("result") + "/" +folder
 
