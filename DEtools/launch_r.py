@@ -29,12 +29,11 @@ scripts_folder = config["scripts_folder"]
 rscripts = [ f for f in os.listdir(scripts_folder) if os.path.isfile(os.path.join(scripts_folder, f))]
 
 outdir = config["outdir"]
-os.mkdir(outdir)
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 
 run_list = []
 for script in rscripts:
-
-
     folder_path = os.path.join(outdir,scripts_dict[script])
     os.mkdir(folder_path)
     call_list = [ config["Rscript_path"],
