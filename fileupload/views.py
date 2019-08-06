@@ -261,6 +261,8 @@ class ChooseGroups(FormView):
             json.dump(config_dict, cf)
 
         launch_string = " ".join([PYTHON_PATH,PATH_TO_DE_LAUNCHER, config_path])
+        with open(os.path.join(MEDIA_ROOT,folder,"test.out"), "w") as text_file:
+            text_file.write(launch_string)
         os.system(launch_string)
 
         redirection = reverse_lazy("result") + "/" +folder
