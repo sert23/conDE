@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^test_ajax/', views.SignUpView.as_view(), name='test_ajax'),
     url(r'^ajax/test_ajax/$', views.test_ajax, name='ajax_test'),
     url(r'^plot/', include('plot.urls')),
+    url(r'^upload/', include('fileupload.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
