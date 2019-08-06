@@ -169,7 +169,14 @@ class DEresult(FormView):
         de_path = os.path.join(folder_path,"de")
         method_list = [f for f in os.listdir(de_path) if os.path.isdir(os.path.join(de_path, f))]
         method_list.sort()
-        update_json(folder_path, FC=2, pval=0.05, iset="All", methods=method_list)
+        # if os.path.exists(os.path.join(folder_path,"config.json")):
+        #     update_json(folder_path, FC=2, pval=0.05, iset="All", methods=method_list)
+        # else:
+        #
+        to_config = {"folder": folder_path,  "methods": method_list,
+        "pval": 0.05, "FC": 2,  "set": "All"}
+        with open(os.path.join(folder_path,"config.json"),"w") as cj:
+            json.dump(to_config,cj)
         calculate_consensus(folder_path, method_list, 0.05, 2)
         # method_list = ["edgeR", "DESeq", "DESeq2","NOISeq"]
         plot_list = [["UpSet","UpSet"],["Barplot","Barplot"],["Venn","Venn Diagram"]]
