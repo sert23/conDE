@@ -79,9 +79,9 @@ row.names(data) <- data$Row.names  # row names manipulation
 data$Row.names <- NULL  # row names manipulation
 
 
-# Exporting the normalised results table containing ALL Genesde
-print(paste("Exporting wilcoxon-test normalised table containing all genes to: ", outdir,"/",basename,"_",sampletypevalues[1],"VS",sampletypevalues[2],"_wilcoxontest_allGenes.csv", sep=""))
-write.table(data.frame("name"=rownames(data), data), file=paste(outdir,"/",basename,"_",sampletypevalues[1],"VS",sampletypevalues[2],"_wilcoxontest_allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+# Exporting the normalised results table containing ALL Genes
+print(paste("Exporting wilcoxon-test normalised table containing all genes to: ", outdir,"/allGenes.csv", sep=""))
+write.table(data.frame("name"=rownames(data), data), file=paste(outdir,"/allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
 
 # Order dataframe based on the padj
 mean_ncounts_selected <- mean_ncounts_selected[order(mean_ncounts_selected$padj), ]
