@@ -17,7 +17,7 @@ scripts_dict = { "de_deseq.R" : "DESeq",
                  "de_deseq2.R" : "DESeq2",
                  "de_edger.R" : "edgeR",
                  "de_noiseq.R" : "NOISeq",
-                 "wilcoxon-test.R" : "Wilvoxon",
+                 "wilcoxon-test.R" : "Wilcoxon",
                  "t-test.R" : "T-test",
                  "de_limma-voom.R": "limma-voom",
                  "de_limma-trend.R": "limma-trend"
