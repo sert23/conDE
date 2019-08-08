@@ -110,8 +110,11 @@ def draw_barplot(path_to_config):
             barmode='stack'
         )
     fig = go.Figure(data=data, layout=layout)
-    bar_plot = [os.path.join(config["folder"], "plots",f) for f in os.listdir(os.path.join(config["folder"], "plots")) if f.endswith("BarPlot.html")][0]
-    os.remove(bar_plot)
+    bar_files = [os.path.join(config["folder"], "plots",f) for f in os.listdir(os.path.join(config["folder"], "plots")) if f.endswith("BarPlot.html")]
+    if bar_files:
+        os.remove(bar_files[0])
+    # bar_plot = [os.path.join(config["folder"], "plots",f) for f in os.listdir(os.path.join(config["folder"], "plots")) if f.endswith("BarPlot.html")][0]
+
     out_path = os.path.join(config["folder"],"plots",random_string+"_BarPlot.html")
     plot(fig, filename=out_path,show_link=False, auto_open=False, include_plotlyjs=True)
     return out_path.replace(MEDIA_ROOT,MEDIA_URL)
