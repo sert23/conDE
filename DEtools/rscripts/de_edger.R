@@ -1,16 +1,18 @@
 ### Stavros Giannoukakos ###
 
-### Notes: Script arguments: 1) <input matrix>.mat 2) <cs list of the groups> 3) path/to/project_folder 4) baseName 5) p-value 6) path/to/packrat_directory
-### Example Command: Rscript edgeR.R matfile.mat cell,cell,cell,exosomes,exosomes,exosomes /projects/project_name mature_sense_minExpr5_RCadj 0.05 /projects/packrat
+### Notes: Script arguments: 1) <input matrix>.mat 2) <cs list of the groups> 3) path/to/project_folder 4) baseName
+### Example Command: Rscript edgeR.R matfile.mat cell,cell,cell,exosomes,exosomes,exosomes /projects/project_name mature_sense_minExpr5_RCadj
+
 
 # Input arguments and error control
 args <- commandArgs(TRUE)
 if (length(args) == 4) {
-  if (!file.exists(args[1])) {
+  if (!file.exists(args[2])) {
     cat("ERROR - The input matrix does NOT exist...\nEXITING!\n")
     quit()
   }
-  matfile <- read.delim(args[1], header=TRUE, row.names=1)   # Input the input delimited text file containing the count matrix
+  # Input the input delimited text file containing the count matrix
+  matfile <- read.delim(args[2], header=TRUE, row.names=1)   
   groups <- unlist(strsplit(args[2], ","))  # Sample description
   sampletypevalues <- unique(groups)  # Getting the group levels
   if (!dir.exists(args[3])) {
@@ -20,12 +22,6 @@ if (length(args) == 4) {
   outdir <- args[3]  # Output directory
   basename <- args[4]  # Base name
   pvalue <- 1  # Default differential expression cutoff
-  # if (dir.exists("/opt/sRNAtoolboxDB/packrat")) {
-  #   packrat_path <- "/opt/sRNAtoolboxDB/packrat"  # Alu/Epigenoma
-  # } else {
-  #   cat("ERROR - The packrat directory could not be found...\nEXITING!\n")
-  #   quit()
-  # }
 } else {
   cat("ERROR - The number of input arguments is not correct...\nEXITING!\n")
   quit()
@@ -41,8 +37,6 @@ if (length(args) == 4) {
 
 # Initiating packrat environment and 
 # loading all necessary libraries
-# library("packrat")
-# packrat::init(packrat_path)
 library("edgeR")
 setwd(outdir)
 
@@ -101,27 +95,23 @@ for(i in 1:(length(sampletypevalues)-1)) {
                                                      transform(mean_ncounts_selected[0], FoldChange = (mean_ncounts_selected[ ,2]+1) / (mean_ncounts_selected[ ,1]+1)),
                                                      mean_ncounts_selected[,3:5]))
         # Inserting FoldChange calculations
-        data <- as.data.frame(cbind(data[ ,selected_samples], mean_ncounts_selected$FoldChange, data$log2FoldChange, data$pvalue, data$padj))
-        # Naming the new columns
-        colnames(data) <- c(head(colnames(data), n=-4), "FoldChange", "log2FoldChange", "pvalue", "padj")
+        data <- as.data.frame(merge(data[ ,selected_samples], mean_ncounts_selected[ ,c("FoldChange", "log2FoldChange", "pvalue", "padj")],  by="row.names"))
+        row.names(data) <- data$Row.names  # row names manipulation
+        data$Row.names <- NULL  # row names manipulation
+        
         # Order dataframe based on the padj
         mean_ncounts_selected <- mean_ncounts_selected[order(mean_ncounts_selected$padj), ]
         
         # Obtaining the final matrix of selected genes
         result <- data[selected, ] 
         
-        # Exporting the normalised results table containing the selected genes below the chosen threshold
-        # print(paste("Exporting edgeR normalised table containing ONLY selected genes (adjusted P value <", pvalue, ") to: ", outdir,"/",basename,"_",sampletypevalues[i],"VS",sampletypevalues[j],"_edger_topGenesBelow", gsub("[.]", "", pvalue), ".csv", sep=""))
-        # write.table(data.frame("name"=rownames(result), result), file=paste(outdir,"/",basename,"_",sampletypevalues[i],"VS",sampletypevalues[j],"_edger_topGenesBelow", gsub("[.]", "", pvalue), ".csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
         # Exporting the normalised results table containing ALL genes
-        print(paste("Exporting edgeR normalised table containing all genes to: ", outdir,"/",basename,"_edger_allGenes.csv", sep=""))
-        write.table(data.frame("name"=rownames(data), data), file=paste(outdir,"/",basename,"_",sampletypevalues[i],"VS",sampletypevalues[j],"_edger_allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        print(paste("Exporting edgeR normalised table containing all genes to: ", outdir,"/allGenes.csv", sep=""))
+        write.table(data.frame("name"=rownames(data), data), file=paste(outdir,"/allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
         
         # Exporting the generated matrix containing the mean normalised results per group per (ALL) gene
         print(paste("Exporting edgeR mean normalised results per group per (all) gene to: ", outdir,"/",basename,"_",sampletypevalues[i],"VS",sampletypevalues[j],"_edger_meanGroupsAllGenes.csv", sep=""))
         write.table(data.frame("name"=rownames(mean_ncounts_selected), mean_ncounts_selected), file=paste(outdir,"/",basename,"_",sampletypevalues[i],"VS",sampletypevalues[j],"_edger_meanGroupsAllGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-        
-        
     }
 }
 

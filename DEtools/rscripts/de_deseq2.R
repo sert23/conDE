@@ -1,7 +1,7 @@
 ### Stavros Giannoukakos ###
 
-### Notes: Script arguments: 1) <input matrix>.mat 2) <cs list of the groups> 3) path/to/project_folder 4) baseName 5) p-value 6) path/to/packrat_directory
-### Example Command: Rscript DESeq2.R matfile.mat cell,cell,cell,exosomes,exosomes,exosomes /projects/project_name mature_sense_minExpr5_RCadj 0.05 /projects/packrat
+### Notes: Script arguments: 1) <input matrix>.mat 2) <cs list of the groups> 3) path/to/project_folder 4) baseName
+### Example Command: Rscript de_deseq2.R matfile.mat cell,cell,cell,exosomes,exosomes,exosomes /projects/project_name mature_sense_minExpr5_RCadj
 
 
 # Input arguments and error control
@@ -11,7 +11,8 @@ if (length(args) == 4) {
     cat("ERROR - The input matrix does NOT exist...\nEXITING!\n")
     quit()
   }
-  matfile <- read.delim(args[1], header=TRUE, row.names=1)   # Input the input delimited text file containing the count matrix
+  # Input the input delimited text file containing the count matrix
+  matfile <- read.delim(args[1], header=TRUE, row.names=1)   
   groups <- unlist(strsplit(args[2], ","))  # Sample description
   sampletypevalues <- rev(unique(groups))  # Getting the group levels
   if (!dir.exists(args[3])) {
@@ -21,12 +22,6 @@ if (length(args) == 4) {
   outdir <- args[3]  # Output directory
   basename <- args[4]  # Base name
   pvalue <- 1  # Default differential expression cutoff
-  # if (dir.exists("/opt/sRNAtoolboxDB/packrat")) {
-  #   packrat_path <- "/opt/sRNAtoolboxDB/packrat"  # Alu/Epigenoma
-  # } else {
-  #   cat("ERROR - The packrat directory could not be found...\nEXITING!\n")
-  #   quit()
-  # }
 } else {
   cat("ERROR - The number of input arguments is not correct...\nEXITING!\n")
   quit()
@@ -41,8 +36,6 @@ if (length(args) == 4) {
 
 # Initiating packrat environment and 
 # loading all necessary libraries
-# library("packrat")
-# packrat::init(packrat_path)
 library("vsn")
 library("DESeq2")
 library("ggplot2")
@@ -63,9 +56,8 @@ dds <- DESeq(dds, fitType="local")
 normalised_counts <- counts(dds, normalized=TRUE)
 
 # Exporting the 'normalised' table
-print(paste("Exporting DESeq2 normalised table containing all genes to: ", outdir,"/",basename,"_deseq2_normTable.csv", sep=""))
+# print(paste("Exporting DESeq2 normalised table containing all genes to: ", outdir,"/",basename,"_deseq2_normTable.csv", sep=""))
 # write.table(data.frame("name"=rownames(normalised_counts), normalised_counts), file=paste(outdir,"/",basename,"_deseq2_RLEnormTable.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-
 
 
 for(i in 1:(length(sampletypevalues)-1)) {
@@ -99,28 +91,27 @@ for(i in 1:(length(sampletypevalues)-1)) {
                                                      transform(mean_ncounts_selected[0], FoldChange = (mean_ncounts_selected[ ,2]+1) / (mean_ncounts_selected[ ,1]+1)),
                                                      mean_ncounts_selected[,3:5]))
         
-        ncounts_selected <- as.data.frame(cbind(normalised_counts[ , selected_samples], mean_ncounts_selected$FoldChange, results$log2FoldChange, results$pvalue, results$padj))
-        # Naming the new columns
-        colnames(ncounts_selected) <- c(head(colnames(ncounts_selected), n=-4), "FoldChange", "log2FoldChange", "pvalue", "padj")
+       
+        
+        
+        # Inserting FoldChange calculations
+        ncounts_selected <- as.data.frame(merge(ncounts_selected[ ,selected_samples], mean_ncounts_selected[ ,c("FoldChange", "log2FoldChange", "pvalue", "padj")],  by="row.names"))
+        row.names(ncounts_selected) <- ncounts_selected$Row.names  # row names manipulation
+        ncounts_selected$Row.names <- NULL  # row names manipulation
+        
         # Order dataframe based on the padj
         mean_ncounts_selected <- mean_ncounts_selected[order(mean_ncounts_selected$padj),]
         
         # Obtaining the final matrix of selected genes
         result <- ncounts_selected[selected, ]
         
-        # Exporting the normalised results table containing the selected genes with log2FoldChange greater than 1 and adjusted p value lower than the user-input value
-        print(paste("Exporting DESeq2 normalised table containing ONLY selected genes (adjusted P value < ", pvalue, ") to: ", outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_deseq2_topGenesBelow", gsub("[.]", "", pvalue), ".csv", sep=""))
-        # write.table(data.frame("name"=rownames(result), result), file=paste(outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_deseq2_topGenesBelow", gsub("[.]", "", pvalue), ".csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
         # Exporting the normalised results table containing ALL genes
-        print(paste("Exporting DESeq2 normalised table containing all genes to: ", outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_DEseq2_allGenes.csv", sep=""))
-        write.table(data.frame("name"=rownames(ncounts_selected), ncounts_selected), file=paste(outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_deseq2_allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
+        print(paste("Exporting DESeq2 normalised table containing all genes to: ", outdir,"/allGenes.csv", sep=""))
+        write.table(data.frame("name"=rownames(ncounts_selected), ncounts_selected), file=paste(outdir,"/allGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
         
         # Exporting the generated matrix containing the mean normalised results per group per (ALL) gene
         print(paste("Exporting DESeq2 mean normalised results per group per (all) gene to: ", outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_deseq2_meanGroupsAllGenes.csv", sep=""))
         write.table(data.frame("name"=rownames(mean_ncounts_selected), mean_ncounts_selected), file=paste(outdir,"/",basename,"_",sampletypevalues[j],"VS",sampletypevalues[i],"_deseq2_meanGroupsAllGenes.csv", sep=""), sep="\t", row.names=FALSE, col.names=TRUE, quote=FALSE)
-        
-        
-     
     }
 }
 
