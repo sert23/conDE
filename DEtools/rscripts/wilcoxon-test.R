@@ -13,7 +13,7 @@ if (length(args) == 4) {
   # Input the input delimited text file containing the count matrix
   matfile <- read.delim(args[1], header=TRUE, row.names=1)   
   groups <- unlist(strsplit(args[2], ","))  # Sample description
-  sampletypevalues <- rev(unique(groups))  # Getting the group levels
+  sampletypevalues <- unique(groups)  # Getting the group levels
   if (!dir.exists(args[3])) {
     cat("ERROR - The output directory does NOT exist...\nEXITING!\n")
     quit()

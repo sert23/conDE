@@ -7,12 +7,12 @@
 # Input arguments and error control
 args <- commandArgs(TRUE)
 if (length(args) == 4) {
-  if (!file.exists(args[2])) {
+  if (!file.exists(args[1])) {
     cat("ERROR - The input matrix does NOT exist...\nEXITING!\n")
     quit()
   }
   # Input the input delimited text file containing the count matrix
-  matfile <- read.delim(args[2], header=TRUE, row.names=1)   
+  matfile <- read.delim(args[1], header=TRUE, row.names=1)   
   groups <- unlist(strsplit(args[2], ","))  # Sample description
   sampletypevalues <- unique(groups)  # Getting the group levels
   if (!dir.exists(args[3])) {
