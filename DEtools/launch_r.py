@@ -16,7 +16,11 @@ with open(sys.argv[1], "r") as file:
 scripts_dict = { "de_deseq.R" : "DESeq",
                  "de_deseq2.R" : "DESeq2",
                  "de_edger.R" : "edgeR",
-                 "de_noiseq.R" : "NOISeq"
+                 "de_noiseq.R" : "NOISeq",
+                 "wilcoxon-test.R" : "Wilvoxon",
+                 "t-test.R" : "T-test",
+                 "de_limma-voom.R": "limma-voom",
+                 "de_limma-trend.R": "limma-trend"
                 }
 # print("This is the name of the script: ", sys.argv[0])
 # print("Number of arguments: ", len(sys.argv))
@@ -34,7 +38,7 @@ if not os.path.exists(outdir):
 
 run_list = []
 for script in rscripts:
-    folder_path = os.path.join(outdir,scripts_dict[script])
+    folder_path = os.path.join(outdir,scripts_dict.get(script))
     os.mkdir(folder_path)
     call_list = [ config["Rscript_path"],
                   os.path.join(scripts_folder, script),
