@@ -409,6 +409,8 @@ $(document).ready(function(){
             image_div.stop();
             setTimeout(function(){
                 if (plot==="Barplot"){
+                    $("#intersect_div").html(data.div_content);
+                    $("#intersect_div2").html(data.div_content);
                     $("#intersect_div").html($("#intersect_div").html());
                 }else{
                     refresh_image("img_inter");
