@@ -249,7 +249,7 @@ class ChooseGroups(FormView):
         gr_list = [group1_str if x in group1 else x for x in header_list]
         gr_list = [group2_str if x in group2 else x for x in gr_list]
 
-        config_dict = {"outdir": os.path.join(MEDIA_ROOT,folder),
+        config_dict = {"outdir": os.path.join(MEDIA_ROOT,folder,"de"),
                        "input_matrix" : target_file,
                        "Rscript_path" : RSCRIPT_PATH,
                        "base_name": "_",
