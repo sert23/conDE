@@ -10,7 +10,8 @@ import plotly.graph_objs as go
 from plotly.offline import plot
 import json
 from random import randrange
-
+import random
+import string
 
 # Create your views here.
 
@@ -79,6 +80,7 @@ def draw_barplot(path_to_config):
         config = json.load(f)
     n_over = {}
     n_under = {}
+    random_string = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
     for method in config["methods"]:
         in_file = os.path.join(config["folder"],"consensus", method+".txt")
         with open(in_file, "r") as in_path:
@@ -108,9 +110,11 @@ def draw_barplot(path_to_config):
             barmode='stack'
         )
     fig = go.Figure(data=data, layout=layout)
-    out_path = os.path.join(config["folder"],"plots","BarPlot.html")
+    bar_plot = [os.path.join(config["folder"], "plots",f) for f in os.listdir(os.path.join(config["folder"], "plots")) if f.endswith("BarPlot.html")][0]
+    os.remove(bar_plot)
+    out_path = os.path.join(config["folder"],"plots",random_string+"_BarPlot.html")
     plot(fig, filename=out_path,show_link=False, auto_open=False, include_plotlyjs=True)
-    print(out_path)
+    return out_path.replace(MEDIA_ROOT,MEDIA_URL)
     # return out_path
     # return plot(fig, show_link=False, auto_open=False, output_type='div', include_plotlyjs=True)
 
@@ -119,7 +123,7 @@ def draw_barplot(path_to_config):
 def draw_plots(path_to_config):
     wait_list = []
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH,"upset.R"),  path_to_config]
-    draw_barplot(path_to_config)
+
     if not LOCAL_TEST:
         wait_list.append(subprocess.Popen(call_list,
                                          stdout=subprocess.PIPE,
@@ -128,12 +132,13 @@ def draw_plots(path_to_config):
         wait_list.append(subprocess.Popen(call_list,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.PIPE))
-        exit_codes = [p.wait() for p in wait_list]
+    barplot_url = draw_barplot(path_to_config)
+    exit_codes = [p.wait() for p in wait_list]
     folders = path_to_config.split("/")
     temp = "/".join(folders[:-1])
     with open(os.path.join(temp,"temp"),"w") as tmp:
         tmp.write(" ".join(call_list))
-
+    return barplot_url
 
 
 def get_plot_content(request):
@@ -145,7 +150,8 @@ def get_plot_content(request):
         media_plot = plot_path.replace(MEDIA_ROOT,MEDIA_URL)
         div_content = ' <div class="col-lg-12"> <img src="' + media_plot + '?'+ str(randrange(500)) +'" id="img_inter" style="width:100%;height:100%;padding:1px;border:thin solid black;">  </div> '
     else:
-        div_content = '<iframe style="border-style:solid;" src='+ os.path.join(MEDIA_ROOT,id,"plots","BarPlot.html").replace(MEDIA_ROOT,MEDIA_URL)  +' width="100%" height="500" allowfullscreen></iframe>'
+        bar_plot = [f for f in os.listdir(os.path.join(MEDIA_ROOT,id,"plots")) if f.endswith("BarPlot.html")][0]
+        div_content = '<iframe style="border-style:solid;" src='+ os.path.join(MEDIA_ROOT,id,"plots",bar_plot).replace(MEDIA_ROOT,MEDIA_URL)  +' width="100%" height="500" allowfullscreen></iframe>'
 
     data["div_content"] = div_content
     return JsonResponse(data)
@@ -166,6 +172,10 @@ class DEresult(FormView):
         path = request.path
         folder = path.split("/")[-1]
         folder_path = os.path.join(MEDIA_ROOT,folder)
+        for p in ["consensus","plots"]:
+            to_make = os.path.join(folder_path,p)
+            if not os.path.exists(to_make):
+                os.mkdir(to_make)
         de_path = os.path.join(folder_path,"de")
         method_list = [f for f in os.listdir(de_path) if os.path.isdir(os.path.join(de_path, f))]
         method_list.sort()
@@ -197,7 +207,7 @@ class DEresult(FormView):
 
 
 def ajax_recalculate(request):
-    mock = {}
+    data = {}
     id = request.GET.get('id', None)
     FC = request.GET.get('FC', None)
     pval = request.GET.get('pval', None)
@@ -207,5 +217,9 @@ def ajax_recalculate(request):
     folder = os.path.join(MEDIA_ROOT, id )
     if update_json(folder, FC=FC,pval=pval,iset=iset,methods=methods):
         calculate_consensus(folder, methods, pval, FC)
-    draw_plots(os.path.join(folder, "config.json"))
-    return JsonResponse(mock)
+    barplot_url = draw_plots(os.path.join(folder, "config.json"))
+
+
+    data["div_content"] = '<iframe style="border-style:solid;" src=' + barplot_url + ' width="100%" height="500" allowfullscreen></iframe>'
+
+    return JsonResponse(data)
