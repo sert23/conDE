@@ -17,7 +17,7 @@ if (length(args) == 4) {
   # Input the input delimited text file containing the count matrix
   matfile <- read.delim(args[1], header=TRUE, row.names=1)   
   groups <- unlist(strsplit(args[2], ","))  # Sample description
-  sampletypevalues <- rev(unique(groups))  # Getting the group levels
+  sampletypevalues <- unique(groups)  # Getting the group levels
   if (!dir.exists(args[3])) {
     cat("ERROR - The output directory does NOT exist...\nEXITING!\n")
     quit()
@@ -72,7 +72,7 @@ limma_table <- calcNormFactors(limma_table)
 
 
 # The prior count is used here to damp down the variances of logarithms of low counts.
-trend_transf <- cpm(limma_table, log=T, prior.count=3)  # Performing logCPM transformation of the scalled data
+trend_transf <- cpm(limma_table, log=T, prior.count=1)  # Performing logCPM transformation of the scalled data
 
 z <- as.data.frame(trend_transf)  # Obtaining the trend normalised log2 per million counts
 
