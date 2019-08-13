@@ -144,7 +144,7 @@ class Heatmap(FormView):
     def get(self, request,**kwargs):
         path = request.path
         folder = path.split("/")[-1]
-        path_to_config = os.path.join(MEDIA_ROOT,folder, "plot_config.json")
+        path_to_config = os.path.join(MEDIA_ROOT,folder, "init_plot_config.json")
         if not os.path.exists(os.path.join(MEDIA_ROOT,folder,"heatmap.html")):
             call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), path_to_config]
             os.system(" ".join(call_list))
