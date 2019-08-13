@@ -164,7 +164,8 @@ class Heatmap(FormView):
         current_json = os.path.join(folder_path, "plot_config.json")
         # copy initial json to "restart" the plot
         shutil.copy(init_json, current_json)
-        shutil.rmtree(os.path.join(folder_path, "heatmap"))
+        if os.path.exists(os.path.join(folder_path, "heatmap")):
+            shutil.rmtree(os.path.join(folder_path, "heatmap"))
         os.mkdir(os.path.join(folder_path, "heatmap"))
         if not os.path.exists(os.path.join(MEDIA_ROOT,folder,"heatmap.html")):
             call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), current_json]
