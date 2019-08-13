@@ -9,6 +9,8 @@ import json
 import random
 import string
 import shutil
+from django.urls import reverse_lazy
+
 
 
 def random_redirect(request):
@@ -24,6 +26,56 @@ def make_random_url(id,plot):
 
 def rnd_str():
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+
+def restrict_to_consensus(input_matrix,input_consensus):
+    df = pd.read_csv(input_matrix, sep="\t")
+    consensus_list = []
+    with open(input_consensus, "r") as consensus_file:
+        lines = consensus_file.readlines()
+    for line in lines:
+        consensus_list.append(line.rstrip())
+    defin = df[df['name'].isin(consensus_list)]
+    with open(input_matrix,"w") as out_f:
+        defin.to_csv(input_matrix, sep='\t', index=False)
+
+
+
+def new_plot_view(request):
+    old_id = request.GET.get('job_id', None)
+    plot = request.GET.get('id_plot', None)
+    method = request.GET.get('id_plot_method', None)
+    old = True
+    while old:
+        new_id = rnd_str()
+        new_path = os.path.join(MEDIA_ROOT,new_id)
+        if not os.path.exists(new_path):
+            os.mkdir(new_path)
+            old = False
+    orig_tab = os.path.join(MEDIA_ROOT,old_id,"de",method,"allGenes.csv")
+    dest_tab = os.path.join(new_path,"input.matrix")
+    shutil.copy(orig_tab,dest_tab)
+    if request.GET.get('consensus', None):
+        restrict_to_consensus(dest_tab, os.path.join(MEDIA_ROOT,old_id,"consensus.txt"))
+
+    with open(os.path.join(MEDIA_ROOT,old_id,"de_config.json")) as f:
+        original_config = json.load(f)
+    original_config.update({"input_matrix":dest_tab,
+                             "title": " ", "top_n": "20"})
+    with open(os.path.join(MEDIA_ROOT, new_id, "init_plot_config.json"), 'w') as f:
+        json.dump(original_config, f)
+
+    if plot == "heatmap":
+        return redirect(reverse_lazy("heatmap") + new_id)
+    if plot == "volcano":
+        return redirect(reverse_lazy("heatmap") + new_id)
+
+    print(old_id)
+    print(plot)
+    print(new_id)
+    print(method)
+    #calculate random string
+    #make initial config
+    #copy expression matrix
 
 
 
