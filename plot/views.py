@@ -60,7 +60,9 @@ def new_plot_view(request):
     with open(os.path.join(MEDIA_ROOT,old_id,"de_config.json")) as f:
         original_config = json.load(f)
     original_config.update({"input_matrix":dest_tab,
-                             "title": " ", "top_n": "20"})
+                             "title": " ", "top_n": "20",
+                            "folder": os.path.join(MEDIA_ROOT,new_id)
+                            })
     with open(os.path.join(MEDIA_ROOT, new_id, "init_plot_config.json"), 'w') as f:
         json.dump(original_config, f)
 
