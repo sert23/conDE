@@ -122,7 +122,8 @@ def preview_table(job_id, separator="\t", has_header=True, first_missing=False):
             #10*pre_table.columns.map(len).max()*(len(pre_table.columns)-1)) for columns width
     )
 
-    return plot(fig,  show_link=False, auto_open=False, include_plotlyjs=True, output_type='div')
+    return plot(fig,  show_link=False, auto_open=False, include_plotlyjs=False, output_type='div')
+    # return plot(fig,  show_link=False, auto_open=False, include_plotlyjs=True, output_type='div')
 
 
 
