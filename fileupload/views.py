@@ -165,6 +165,8 @@ class Upload(FormView):
         first_missing = bool(request.POST.get("missing"))
         sep = sep_dict.get(separator)
         target_file = os.path.join(MEDIA_ROOT,job_id,"uploaded","input.matrix")
+        if os.path.exists(target_file):
+            os.remove(target_file)
         group1 = request.POST.get("id_group1").replace(" ","_")
         group2 = request.POST.get("id_group2").replace(" ","_")
         if group1 and group2:
