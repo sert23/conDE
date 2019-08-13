@@ -85,17 +85,30 @@ def heatmap_recalculate(request):
     id = request.GET.get('id', None)
     folder = os.path.join(MEDIA_ROOT, id)
     path_to_config = os.path.join(folder, "plot_config.json")
+    shutil.rmtree(os.path.join(folder, "heatmap"))
+    os.mkdir(os.path.join(folder, "heatmap"))
+    new_outdir = os.path.join(folder, "heatmap", rnd_str())
+    os.mkdir(new_outdir)
+
     with open(path_to_config) as f:
         config = json.load(f)
 
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
+    pval = request.GET.get('pval', None)
+    if title:
+        config.update({"pval": pval})
+    FC = request.GET.get('FC', None)
+    if title:
+        config.update({"FC": FC})
+    config.update({"folder": new_outdir})
     with open(path_to_config, 'w') as f:
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), path_to_config]
     os.system(" ".join(call_list))
-    return JsonResponse({"test":"ejejhe"})
+    return JsonResponse({"new_url": os.path.join(new_outdir.replace(MEDIA_ROOT, MEDIA_URL), "volcano.html")
+                         })
 
 
 def volcano_recalculate(request):
@@ -146,20 +159,24 @@ class Heatmap(FormView):
     def get(self, request,**kwargs):
         path = request.path
         folder = path.split("/")[-1]
-        path_to_config = os.path.join(MEDIA_ROOT,folder, "init_plot_config.json")
+        folder_path = os.path.join(MEDIA_ROOT,folder)
+        init_json = os.path.join(folder_path, "init_plot_config.json")
+        current_json = os.path.join(folder_path, "plot_config.json")
+        # copy initial json to "restart" the plot
+        shutil.copy(init_json, current_json)
+        shutil.rmtree(os.path.join(folder_path, "volcano"))
+        os.mkdir(os.path.join(folder_path, "volcano"))
         if not os.path.exists(os.path.join(MEDIA_ROOT,folder,"heatmap.html")):
-            call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), path_to_config]
+            call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), current_json]
             os.system(" ".join(call_list))
 
-
         heatmap_url = os.path.join(MEDIA_URL,folder,"heatmap.html")
-
-
 
         return render(self.request, 'heatmap_template.html',
                       {"job_id": folder,
                        "heatmap_url": heatmap_url
                        })
+
 
 class Volcano(FormView):
     #template_name = 'bench.html'
