@@ -107,7 +107,7 @@ def heatmap_recalculate(request):
         json.dump(config, f)
     call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), path_to_config]
     os.system(" ".join(call_list))
-    return JsonResponse({"new_url": os.path.join(new_outdir.replace(MEDIA_ROOT, MEDIA_URL), "volcano.html")
+    return JsonResponse({"new_url": os.path.join(new_outdir.replace(MEDIA_ROOT, MEDIA_URL), "heatmap.html")
                          })
 
 
