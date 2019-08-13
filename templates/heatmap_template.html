@@ -58,7 +58,7 @@
 
                 </div>
                 <div class="col-lg-9" id="hm_div">
-                <iframe src="{{ heatmap_url }}" width="100%" height="800" allowfullscreen></iframe>
+                <iframe src="{{ heatmap_url }}" width="100%" id="heatmap" height="800" allowfullscreen></iframe>
             </div>
             </div>
 
@@ -124,9 +124,13 @@ function showTab(element)  {
             alert(data.test);
             image_div.stop();
             setTimeout(function(){
+                var iFrame = $('#heatmap');
+                {#iFrame.load(data.new_url);#}
+                iFrame.attr('src', data.new_url);
                 $("#hm_div").html($("#hm_div").html());
                 }
                 , 1);
+            $("#hm_div").html($("#hm_div").html());
             image_div.fadeIn(10);
 
 
