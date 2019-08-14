@@ -68,12 +68,14 @@
                             <div class="col-lg-6">
                                 <label for="id_FC" class="control-label ">
                                 Minimum Fold Change:
-                                </label>  <input type="text" value="1" name="threshold" id="id_FC" size="4" style="padding-right: 8px;"/>
+                                </label>  <input type="number" value="1" name="threshold" id="id_FC" size="4" min="0" step="0.1" style="padding-right: 8px; width: 60px;" onkeypress="return event.charCode != 45"/>
+                                    {#                                </label>  <input type="text" value="1" name="threshold" id="id_FC" size="4" style="padding-right: 8px;"/>#}
                             </div>
                             <div class="col-lg-6">
                                 <label for="id_pval" class="control-label ">
                                     Maximum p-value:
-                                    </label>  <input type="text" value="0.05" name="threshold" id="id_pval" size="4" style="padding-right: 8px;"/>
+                                    </label>  <input type="number" value="0.05" name="threshold" id="id_pval" min="0" max="1" step="0.01" size="4" style="padding-right: 8px; width: 60px;" onKeyUp="if(this.value>1){this.value='1';}"/>
+{#                                    </label>  <input type="text" value="0.05" name="threshold" id="id_pval" size="4" style="padding-right: 8px;"/>#}
                             </div>
                         </div>
 
