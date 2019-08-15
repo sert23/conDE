@@ -13,7 +13,7 @@ groups <- unlist(strsplit( json_data[["matrixDesc"]], ","))  # Sample descriptio
 sampletypevalues <- rev(unique(groups))  # Getting the group levels
 outdir <- json_data[["folder"]]
 FC <- as.numeric(json_data[["FC"]])
-descending <- json_data[["descending"]]
+descending <- json_data[["sortSense"]]
 basename <- ""
 top_n <- as.numeric(json_data[["top_n"]])  # Cutoff for plotting top genes
 heatmap_title <- json_data[["title"]]
