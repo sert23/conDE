@@ -37,9 +37,9 @@ sort_genes_cv <- function(m, desc=TRUE){
   }
 }
 
-if(json_data[["folder"]] == "Average"){
+if(json_data[["sortBy"]] == "average"){
   m<-sort_genes_av(matfile, descending)
-}else if(json_data[["folder"]] == "CV"){
+}else if(json_data[["sortBy"]] == "CV"){
   m<-sort_genes_cv(matfile, descending)
 }else{
   m<-matfile
