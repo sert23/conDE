@@ -38,7 +38,7 @@ sort_genes_cv <- function(m, desc=TRUE){
   }
 }
 
-if(!is.null(sortBy)){
+if(is.null(sortBy)){
   sortBy<-"pass"
 }
 
