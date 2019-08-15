@@ -35,6 +35,7 @@ def restrict_to_consensus(input_matrix,input_consensus):
     for line in lines:
         consensus_list.append(line.rstrip())
     defin = df[df['name'].isin(consensus_list)]
+    defin = defin.drop(["pvalue","padj"],axis=1)
     with open(input_matrix,"w") as out_f:
         defin.to_csv(input_matrix, sep='\t', index=False)
 
@@ -93,6 +94,24 @@ def heatmap_recalculate(request):
     with open(path_to_config) as f:
         config = json.load(f)
 
+    group1_name = request.GET.get('group1_name', None)
+    if group1_name:
+        print("")
+    group2_name = request.GET.get('group2_name', None)
+    if group2_name:
+        print("")
+    ntop = request.GET.get('ntop', None)
+    if ntop:
+        config.update({'ntop': ntop})
+    sortBy = request.GET.get('sortBy', None)
+    if sortBy:
+        config.update({'sortBy': sortBy})
+    sortSense = request.GET.get('sortSense', None)
+    if sortSense:
+        config.update({'sortSense': sortSense})
+
+        #############################old parameters; check R parameters before this
+
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
@@ -141,7 +160,11 @@ def volcano_recalculate(request):
     return JsonResponse( {"new_url" : os.path.join(new_outdir.replace(MEDIA_ROOT,MEDIA_URL),"volcano.html")
                                                                                                         })
 
-
+def header_finder(input_matrix, input_list):
+    with open(input_matrix,"r") as f:
+        first_line = f.readline().rstrip()
+        headers = first_line.split("\t")
+        return [x for x in input_list if x in headers]
 
 
 class Heatmap(FormView):
@@ -164,6 +187,21 @@ class Heatmap(FormView):
         current_json = os.path.join(folder_path, "plot_config.json")
         # copy initial json to "restart" the plot
         shutil.copy(init_json, current_json)
+        group1=""
+        group2=""
+
+        if os.path.exists(os.path.join(folder_path, "groups")):
+            with open(os.path.join(folder_path,"groups"),"r") as gf:
+                lines = gf.readlines()
+                group1 = lines[0].rstrip().replace("_"," ")
+                group2 = lines[1].rstrip().replace("_"," ")
+        addFC = False
+        addpval = False
+        headers_found = header_finder(os.path.join(folder_path,"input.matrix"),["FoldChange","pvalue"])
+        if "FoldChange" in headers_found:
+            addFC=True
+        if "pvalue" in headers_found:
+            addpval=True
         if os.path.exists(os.path.join(folder_path, "heatmap")):
             shutil.rmtree(os.path.join(folder_path, "heatmap"))
         os.mkdir(os.path.join(folder_path, "heatmap"))
@@ -175,7 +213,11 @@ class Heatmap(FormView):
 
         return render(self.request, 'heatmap_template.html',
                       {"job_id": folder,
-                       "heatmap_url": heatmap_url
+                       "heatmap_url": heatmap_url,
+                       "group1_name": group1,
+                       "group2_name": group2,
+                       "addFC": addFC,
+                       "addpval": addpval,
                        })
 
 
