@@ -7,7 +7,75 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Results for your job: {{ job_id }}</h1>
+
+                <style>
+
+                    .modal {
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                      left: 0;
+                      overflow: hidden;
+                      refresh: true;
+
+                    }
+
+                    .modal-dialog {
+                      position: fixed;
+                        max-width: 100%;
+                        overflow-y: initial !important;
+                      margin: 0;
+                      width: 100%;
+                      height: 100%;
+                      padding: 0;
+                    }
+
+                    .modal-content {
+                      position: absolute;
+                        overflow-y: auto;
+                      top: 0;
+                      right: 0;
+                      bottom: 0;
+                      left: 0;
+                      border: 2px solid #3c7dcf;
+                      border-radius: 0;
+                      box-shadow: none;
+                    }
+                </style>
+
+            {# View Large modal                #}
+
+                <div class="modal fade" id="hmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel2"></h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row row-grid">
+
+                            <div class="col-lg-12" >
+                                <div id="#intersect_div2">
+                                    <iframe src="{{ heatmap_url }}" width="100%" id="heatmap2" height="750" allowfullscreen></iframe>
+                                </div>
+
+                            </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+{#                        <button type="button" class="btn btn-primary">Save changes</button>#}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+            {# View Large modal END                #}
+
+
+{#                <h1 class="page-header">Results for your job: {{ job_id }}</h1>#}
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -28,7 +96,9 @@
                     Title:
                     </label>  <input type="text" value="" id="id_title" name="parameter" size="30" style="padding-right: 8px;"/>
                         </div>
-                       <div class="col-lg-3">
+
+                         {% if group1_name %}
+                        <div class="col-lg-3">
                             <input type="text"  id="id_group1" value="{{ group1_name }}" name="parameter" size="30" style="padding-right: 8px;"/>
                         </div>
                             <div class="col-lg-1">
@@ -37,6 +107,8 @@
                        <div class="col-lg-3">
                              <input type="text" id="id_group2" value="{{ group2_name }}" name="parameter" size="30" style="padding-right: 8px;"/>
                         </div>
+
+                            {% endif %}
 
                     </div>
                 </div>
@@ -101,6 +173,19 @@
                         </div>
 
                     </div>
+                        <div class="row mt-2">
+                        <div class="col-lg-4">
+                            <label for="id_FC" class="control-label ">
+                                Use:</label>  </div>
+                            <div class="col-lg-8">
+                            <select class="form-control select" id="id_set">
+                        <option value="All">All DE genes</option>
+                        <option value="Over">Overexpressed</option>
+                        <option value="Under">Underexpressed</option>
+                    </select>
+                        </div>
+                        </div>
+
                     {% endif %}
 
                     {% if addpval %}
@@ -112,13 +197,32 @@
 
                     </div>
                     {% endif %}
+
+
+                <div class="row mt-2">
+                        <div class="col-lg-5">
+
+                        </div>
+
+                        <div class="col-lg-7">
+
+                            <input type="hidden" name="job_id" id="job_id" value="{{ job_id }}">
+                            <input type="hidden" name="consensus" id="consensus" value=true>
+                             <button type="button"  id="consensus_plot_button" class="btn btn-primary" onClick="window.location.reload();">Restart plot</button>
+
+
+                        </div>
+                    </div>
+
                 </div>
 
               </div>
 
                 </div>
                 <div class="col-lg-9" id="hm_div">
+                    <p style="text-align: center;"> <a href="javascript:void(0)"  data-toggle="modal" data-target="#hmModal" style="text-align: center;">  View large <i class="fa fa-search-plus fa-fw"></i></a></p>
                 <iframe src="{{ heatmap_url }}" width="100%" id="heatmap" height="800" allowfullscreen></iframe>
+                    <p style="text-align: center;"> <a href="javascript:void(0)"  data-toggle="modal" data-target="#hmModal" style="text-align: center;">  View large <i class="fa fa-search-plus fa-fw"></i></a></p>
             </div>
             </div>
 
@@ -195,6 +299,7 @@ function showTab(element)  {
             'sortSense': $('#descending').val(),
             'pval': $('#id_pval').val(),
             'FC': $('#id_FC').val(),
+            'set': $('#id_set').val(),
             {#'pval': pval,#}
             {#'methods': methods.toString(),#}
             {#'set': iset,#}
@@ -206,8 +311,10 @@ function showTab(element)  {
             image_div.stop();
             setTimeout(function(){
                 var iFrame = $('#heatmap');
+                var iFrame2 = $('#heatmap2');
                 {#iFrame.load(data.new_url);#}
                 iFrame.attr('src', data.new_url);
+                iFrame2.attr('src', data.new_url);
                 $("#hm_div").html($("#hm_div").html());
                 }
                 , 1);
