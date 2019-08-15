@@ -110,8 +110,9 @@ def heatmap_recalculate(request):
     if sortSense:
         config.update({'sortSense': sortSense})
 
-        #############################old parameters; check R parameters before this
-
+    iset = request.GET.get('set', None)
+    if iset:
+        config.update({"set": iset})
     title = request.GET.get('title', None)
     if title:
         config.update({"title": title})
