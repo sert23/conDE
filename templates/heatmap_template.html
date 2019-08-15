@@ -23,10 +23,19 @@
                 </div>
                 <div class="card-body">
                         <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-5">
                             <label for="id_FC" class="control-label ">
                     Title:
                     </label>  <input type="text" value="" id="id_title" name="parameter" size="30" style="padding-right: 8px;"/>
+                        </div>
+                       <div class="col-lg-3">
+                            <input type="text"  id="id_group1" value="{{ group1_name }}" name="parameter" size="30" style="padding-right: 8px;"/>
+                        </div>
+                            <div class="col-lg-1">
+                                <h4 align="center">vs</h4>
+                            </div>
+                       <div class="col-lg-3">
+                             <input type="text" id="id_group2" value="{{ group2_name }}" name="parameter" size="30" style="padding-right: 8px;"/>
                         </div>
 
                     </div>
@@ -48,10 +57,61 @@
                         <div class="row">
                         <div class="col-lg-12">
                             <label for="id_FC" class="control-label ">
-                    Number of genes: </label>  <input type="text" name="parameter" value="" id="id_max" size="4" style="padding-right: 1px;"/>
+                    Number of genes: </label>  <input type="text" name="parameter" style="float: right;" value="" id="id_ntop" size="4" style="padding-right: 1px;"/>
                         </div>
 
                     </div>
+
+                    <div class="row mt-2">
+                        <div class="col-lg-4">
+                            <label for="id_plot"  class="control-label ">
+                                Sort by:
+                                </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="hidden" name="parameter" id="sort" value="average"/>
+                            <select class="form-control select" id="id_sort" onchange="sortBy(event)">
+                                <option value="file">File Order</option>
+                                <option value="average">Expression</option>
+                                <option value="CV">Variation (CV)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2">
+                        <div class="col-lg-4">
+                            <label for="id_plot"  class="control-label ">
+{#                                Plot type:#}
+                                </label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input type="hidden" name="parameter" id="descending" value="descending"/>
+                            <select class="form-control select" id="id_ascending" name="id_plot" onchange="sortSense(event)">
+                                <option value="true">Descending</option>
+                                <option value="false">Ascending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    {% if addFC %}
+                    <div class="row mt-2">
+                        <div class="col-lg-12">
+                            <label for="id_FC" class="control-label ">
+                    Minimum Fold Change: </label>  <input type="number" value="1" name="parameter" id="id_FC" size="4" min="0" step="0.1" style="padding-right: 8px; width: 60px;" onkeypress="return event.charCode != 45"/>
+                        </div>
+
+                    </div>
+                    {% endif %}
+
+                    {% if addpval %}
+                    <div class="row mt-2">
+                        <div class="col-lg-12">
+                            <label for="id_FC" class="control-label ">
+                    P-value: </label>  <input type="number" value="0.05" style="float: right;" name="parameter" id="id_pval" min="0" max="1" step="0.01" size="4" style="padding-right: 8px; width: 60px;" onKeyUp="if(this.value>1){this.value='1';}"/>
+                        </div>
+
+                    </div>
+                    {% endif %}
                 </div>
 
               </div>
@@ -85,6 +145,21 @@
     </script>
 
     <script>
+
+    function sortBy(e) {
+
+    document.getElementById("sort").value = e.target.value;
+         updatePlot();
+};
+    function sortSense(e) {
+
+    document.getElementById("descending").value = e.target.value;
+         updatePlot();
+};
+
+    </script>
+
+    <script>
 function showTab(element)  {
     var tabContents = document.getElementsByClassName('tab-pane');
     for (var i = 0; i < tabContents.length; i++) {
@@ -105,6 +180,7 @@ function showTab(element)  {
 
 <script>
     function updatePlot() {
+        {#alert("lala");#}
         var image_div = $('#hm_div');
         image_div.fadeOut(5000);
         $.ajax({
@@ -112,6 +188,13 @@ function showTab(element)  {
         {#type: 'POST',#}
         data: {
             'title': $('#id_title').val(),
+            'group1_name': $('#id_group1').val(),
+            'group2_name': $('#id_group2').val(),
+            'ntop': $('#id_ntop').val(),
+            'sortBy': $('#sort').val(),
+            'sortSense': $('#descending').val(),
+            'pval': $('#id_pval').val(),
+            'FC': $('#id_FC').val(),
             {#'pval': pval,#}
             {#'methods': methods.toString(),#}
             {#'set': iset,#}
