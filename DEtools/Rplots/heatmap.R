@@ -17,6 +17,7 @@ descending <- json_data[["sortSense"]]
 basename <- ""
 top_n <- as.numeric(json_data[["top_n"]])  # Cutoff for plotting top genes
 heatmap_title <- json_data[["title"]]
+sortBy<-json_data[["sortBy"]]
 setwd(outdir)
 
 sort_genes_av <- function(m, desc=TRUE){
@@ -37,9 +38,13 @@ sort_genes_cv <- function(m, desc=TRUE){
   }
 }
 
-if(json_data[["sortBy"]] == "average"){
+if(!is.null(sortBy)){
+  sortBy<-"pass"
+}
+
+if(sortBy == "average"){
   m<-sort_genes_av(matfile, descending)
-}else if(json_data[["sortBy"]] == "CV"){
+}else if(sortBy == "CV"){
   m<-sort_genes_cv(matfile, descending)
 }else{
   m<-matfile
