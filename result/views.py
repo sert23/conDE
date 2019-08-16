@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import FormView, DetailView
 from django.http import JsonResponse
-from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH
+from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH, PYTHON_PATH, PATH_TO_CONSENSUS_SCRIPT
 import pandas as pd
 import os
 import subprocess
@@ -12,6 +12,7 @@ import json
 from random import randrange
 import random
 import string
+import shutil
 
 # Create your views here.
 
@@ -61,6 +62,8 @@ def calculate_consensus(directory,methods,pval,FC):
     import itertools
     import pandas
     con_list=[]
+    shutil.rmtree(os.path.join(directory, "consensus"))
+    os.mkdir(os.path.join(directory, "consensus"))
     for method in methods:
         out_dir = os.path.join(directory,"consensus",method+".txt")
         de_dir = os.path.join(directory,"de",method)
@@ -121,6 +124,22 @@ def draw_barplot(path_to_config):
     # return out_path
     # return plot(fig, show_link=False, auto_open=False, output_type='div', include_plotlyjs=True)
 
+def consensusToJson(jobID):
+    input_table = os.path.join(MEDIA_ROOT,jobID,"consensus.tsv")
+    with open(input_table,"r") as table_file:
+        lines = table_file.readlines()
+        headers = lines[0].rstrip().split("\t")
+
+        body_list = []
+        for line in lines[1:]:
+            body_list.append(line.rstrip().split("\t"))
+
+        heads = []
+        for header in headers:
+            heads.append({"title": header})
+    return heads,body_list
+    # return json.dumps(headers),json.dumps(body_list)
+
 
 
 def draw_plots(path_to_config):
@@ -135,6 +154,10 @@ def draw_plots(path_to_config):
         wait_list.append(subprocess.Popen(call_list,
                                           stdout=subprocess.PIPE,
                                           stderr=subprocess.PIPE))
+    call_list = [PYTHON_PATH, PATH_TO_CONSENSUS_SCRIPT, path_to_config ]
+    wait_list.append(subprocess.Popen(call_list,
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE))
     barplot_url = draw_barplot(path_to_config)
     exit_codes = [p.wait() for p in wait_list]
     folders = path_to_config.split("/")
@@ -179,6 +202,7 @@ class DEresult(FormView):
             to_make = os.path.join(folder_path,p)
             if not os.path.exists(to_make):
                 os.mkdir(to_make)
+
         de_path = os.path.join(folder_path,"de")
         method_list = [f for f in os.listdir(de_path) if os.path.isdir(os.path.join(de_path, f))]
         method_list.sort()
@@ -190,12 +214,13 @@ class DEresult(FormView):
         "pval": 0.05, "FC": 2,  "set": "All"}
         with open(os.path.join(folder_path,"config.json"),"w") as cj:
             json.dump(to_config,cj)
-        calculate_consensus(folder_path, method_list, 0.05, 2)
+        # calculate_consensus(folder_path, method_list, 0.05, 2)
         # method_list = ["edgeR", "DESeq", "DESeq2","NOISeq"]
         plot_list = [["UpSet","UpSet"],["Barplot","Barplot"],["Venn","Venn Diagram"]]
         set_list = [["All","All DE genes"],["Over","Overexpressed only"],["Under","Underexpressed only"]]
         calculate_consensus(folder_path,method_list,0.05,2)
         draw_plots(os.path.join(folder_path,"config.json"))
+        # con_head,con_body = consensusToJson(folder)
         start_plot = os.path.join(folder_path,"plots","UpSet.jpg").replace(MEDIA_ROOT,MEDIA_URL)
 
 
@@ -205,6 +230,8 @@ class DEresult(FormView):
                        "plot_list" : plot_list,
                        "start_plot": start_plot,
                        "set_list": set_list,
+                       # "con_head": con_head,
+                       # "con_body": con_body
                        })
 
 
@@ -225,4 +252,12 @@ def ajax_recalculate(request):
 
     data["div_content"] = '<iframe style="border-style:solid;" src=' + barplot_url + ' width="100%" height="500" allowfullscreen></iframe>'
 
+    return JsonResponse(data)
+
+def ajax_consensus(request):
+    data = {}
+    job = request.GET.get('id', None)
+    con_head, con_body = consensusToJson(job)
+    data["header"] = con_head
+    data["body"] = con_body
     return JsonResponse(data)
