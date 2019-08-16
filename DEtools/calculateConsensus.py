@@ -54,7 +54,7 @@ def tableConsensus(input_folder):
         countInfra = str(consensus[element][1])
         if countOver>countInfra:
             label = "Over"
-            methodsConsensus = ",".join(consensus[element][2])
+            methodsConsensus = ", ".join(consensus[element][2])
             countConsensus = str(countOver)
         elif countInfra>countOver:
             label = "Infra"
