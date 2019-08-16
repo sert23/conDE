@@ -44,7 +44,7 @@ def tableConsensus(input_folder):
             data = [countOver,countInfra,methodsOver,methodsInfra]
             consensus[name] = data
 
-    headerOutfile = "name\t#Over\t#Infra\t#Consensus\tExpression\tconsensusMethods\n"
+    headerOutfile = "Name\t#Overexpressed\t#Infraexpressed\t#Consensus\tExpression\tConsensus Methods\n"
 
     outFile = open(outputTable,'w')
     outFile.write(headerOutfile)
@@ -58,7 +58,7 @@ def tableConsensus(input_folder):
             countConsensus = str(countOver)
         elif countInfra>countOver:
             label = "Infra"
-            methodsConsensus = ",".join(consensus[element][3])
+            methodsConsensus = ", ".join(consensus[element][3])
             countConsensus = str(countInfra)
         else:
             label = "Both"
