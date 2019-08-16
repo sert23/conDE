@@ -2,7 +2,13 @@
 {% load staticfiles %}
 
 
+
+
 {% block content %}
+
+    <link href= "{% static 'vendor/datatables/dataTables.bootstrap4.min.css'%} " rel="stylesheet">
+
+
 
     <div id="page-wrapper">
         <div class="row">
@@ -113,7 +119,7 @@
 
                     List of selected genes <a href="/srnatoolbox/static/IK_exosomes.fastq.gz" download> <i class="fa fa-download fa-fw"></i> Download</a>
                 <br>
-                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal">  Preview DE table <i class="fa fa-table fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal" id="preview_de">  Preview DE table <i class="fa fa-table fa-fw"></i></a>
 
 {#                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!#}
 {#                Number of differentially expressed genes: 1180#}
@@ -267,11 +273,27 @@
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">X</button>
+{#                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>#}
                         <h4 class="modal-title" id="myModalLabel"></h4>
                       </div>
                       <div class="modal-body">
-                        this is modal 1
+                          <div class="panel-body">
+                              <div class="row">
+                                  <div class="col-lg-1"></div>
+                                  <div class="col-lg-10">
+
+                                      <div class="table-responsive">
+                                      <table class="table table-bordered" id="con_table" width="100%" cellspacing="0"></table>
+                          </div>
+
+                                  </div>
+                              </div>
+
+
+
+{#                        <table id="con_table" class="table table-striped table-bordered table-hover dataTable no-footer"></table>#}
+                      </div>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -289,7 +311,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title" id="myModalLabel2"></h4>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body" id="view_body">
                         <div class="row row-grid">
                             <div class="col-lg-2">
                             </div>
@@ -350,6 +372,9 @@
 
     </script>
 
+
+
+
     <script>
 function showTab(element)  {
     var tabContents = document.getElementsByClassName('tab-pane');
@@ -364,7 +389,61 @@ function showTab(element)  {
 
     </script>
 
-    <script src="{% static 'js/jquery-3.1.0.min.js'%}"></script>
+{#    <script src="{% static 'js/jquery-3.1.0.min.js'%}"></script>#}
+
+{#      <script src="{% static 'vendors/datatables.net/js/jquery.dataTables.min.js'%} "></script>#}
+      <script src="{% static 'vendor/datatables/jquery.dataTables.min.js'%} "></script>
+{#      <script src="{% static 'vendors/datatables.net-bs/js/dataTables.bootstrap.min.js'%} "></script>#}
+      <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js'%} "></script>
+
+
+{#      <script src="{% static 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-buttons/js/buttons.flash.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-buttons/js/buttons.html5.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-buttons/js/buttons.print.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-keytable/js/dataTables.keyTable.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js'%} "></script>#}
+{#      <script src="{% static 'vendors/datatables.net-scroller/js/dataTables.scroller.min.js'%} "></script>#}
+{#      <script src="http://cdn.datatables.net/plug-ins/1.10.12/api/processing().js'%} "></script>#}
+    <script>
+    $('#preview_de').on('click', function () {
+
+        $.ajax({
+        url: '{% url "ajax_cons" %}',
+        data: {
+            "id" : "{{ job_id }}"
+        },
+        dataType: 'json',
+        success: function (data) {
+            {#alert("working");#}
+            $("#tableModal").modal('show');
+            var header = data.header;
+            var body = data.body;
+            var table = $('#con_table').DataTable( {
+
+                data: body,
+                destroy: true,
+            //        processing: true,
+            //        serverSide: true,
+            //        deferRender: false,
+                'language':{
+               "loadingRecords": "&nbsp;",
+              "processing": "Loading..."
+            },
+                columns: header,
+            });
+
+
+        }
+      });
+
+
+    });
+
+    </script>
 
     <script>
     $(document).on('click', '.border-left-primary', function() {
@@ -444,7 +523,7 @@ $(document).ready(function(){
       $("#intersectModal").removeData();
       {#alert("yes");#}
       var a = $('#outside_intersect').html();
-      $('.modal-body').html('<div class="row row-grid">\n' +
+      $('#view_body').html('<div class="row row-grid">\n' +
           '                            <div class="col-lg-2">\n' +
           '                            </div>\n' +
           '                            <div class="col-lg-9" >' + a + '</div>\n' +
