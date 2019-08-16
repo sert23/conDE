@@ -70,7 +70,7 @@ def tableConsensus(input_folder):
     outFile.close()
 
 # with open(sys.argv[1], "r") as jf:
-with open("/Users/ernesto/PycharmProjects/conDE/upload/AA88/config.json", "r") as jf:
+with open(sys.argv[1], "r") as jf:
     input_dict = json.load(jf)
 # input_dict = json.load()
 
