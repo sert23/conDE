@@ -30,6 +30,13 @@ def plot_PCA(input_df, PCA_obj,config_dict):
     )
         data.append(trace)
 
+    # layout = go.Layout(
+    #     margin=go.layout.Margin(
+    #         r=500,
+    #     ),
+    #
+    #     title="")
+
     layout = go.Layout(
         margin=go.layout.Margin(
             l=50,
@@ -40,9 +47,9 @@ def plot_PCA(input_df, PCA_obj,config_dict):
         ),
         title=" ",
         font=dict(size=18),
-        autosize=False,
-        height=650,
-        width=1150,
+        # autosize=False,
+        # height=650,
+        # width=1150,
         xaxis=dict(
             automargin=True,
             title='PC1',
@@ -60,11 +67,12 @@ def plot_PCA(input_df, PCA_obj,config_dict):
 
 
     fig = dict(data=data, layout=layout)
+    # div = plot(fig, output_type="div", show_link=False, auto_open=False, include_plotlyjs=True)
     plot(fig, filename=os.path.join(config_dict.get("folder"),"PCA.html"), show_link=False, auto_open=False, include_plotlyjs=True)
-
+    # return div
 
 input_json = sys.argv[1]
-# input_json = "/Users/ernesto/PycharmProjects/conDE/upload/AA99/plot_config.json"
+# input_json = "/Users/ernesto/PycharmProjects/conDE/upload/IYNT4L3VOR/plot_config.json"
 
 with open(input_json, "r") as file:
     config = json.load(file)
@@ -76,7 +84,7 @@ df = pd.read_csv(
     filepath_or_buffer=input_file,
     sep='\t')
 
-df = df.drop(["FoldChange","log2FoldChange","pvalue","padj"],axis=1)
+df = df.drop(["FoldChange","log2FoldChange","pvalue","padj"],axis=1, errors="ignore")
 df_t = df.T
 df_t.columns = df_t.iloc[0]
 df_t = df_t.drop(df_t.index[0])
@@ -93,7 +101,10 @@ print(dir(pca))
 print(numpy.array(to_plot)[:,0])
 print(numpy.array(to_plot)[:,1])
 labels = list(df_t.index)
+print(labels)
+print("here")
+print(y)
 d = {'PC1': numpy.array(to_plot)[:,0] , 'PC2': numpy.array(to_plot)[:,1], 'groups':y, "labels": labels}
 idf = pd.DataFrame(data=d)
-plot_PCA(idf,pca)
+plot_PCA(idf,pca, config)
 
