@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH, SUB_SITE
+from conDE.settings import MEDIA_ROOT, MEDIA_URL, RSCRIPT_PATH, LOCAL_TEST, RPLOTS_PATH, SUB_SITE,PYTHON_PATH
 import pandas as pd
 import os
 from django.http import JsonResponse
@@ -71,6 +71,9 @@ def new_plot_view(request):
         return redirect(reverse_lazy("heatmap") + new_id)
     if plot == "volcano":
         return redirect(reverse_lazy("heatmap") + new_id)
+    if plot == "PCA":
+        return redirect(reverse_lazy("pca") + new_id)
+
 
     print(old_id)
     print(plot)
@@ -256,3 +259,56 @@ class Volcano(FormView):
                        "volcano_url": volcano_url
                        })
 
+class Pca(FormView):
+    #template_name = 'bench.html'
+    #form_class = sRNABenchForm
+    #success_url = reverse('photos:multi_start')
+
+    def get_form_kwargs(self):
+        '''This goes in the Update view'''
+        kwargs = super(Pca, self).get_form_kwargs()  # put your view name in the super
+
+        #kwargs["folder"] = self.request.path
+        return kwargs
+
+    def get(self, request,**kwargs):
+        path = request.path
+        folder = path.split("/")[-1]
+        folder_path = os.path.join(MEDIA_ROOT,folder)
+        init_json = os.path.join(folder_path, "init_plot_config.json")
+        current_json = os.path.join(folder_path, "plot_config.json")
+        # copy initial json to "restart" the plot
+        shutil.copy(init_json, current_json)
+        group1=""
+        group2=""
+
+        if os.path.exists(os.path.join(folder_path, "groups")):
+            with open(os.path.join(folder_path,"groups"),"r") as gf:
+                lines = gf.readlines()
+                group1 = lines[0].rstrip().replace("_"," ")
+                group2 = lines[1].rstrip().replace("_"," ")
+        addFC = False
+        addpval = False
+        headers_found = header_finder(os.path.join(folder_path,"input.matrix"),["FoldChange","pvalue"])
+        if "FoldChange" in headers_found:
+            addFC=True
+        if "pvalue" in headers_found:
+            addpval=True
+        if os.path.exists(os.path.join(folder_path, "PCA")):
+            shutil.rmtree(os.path.join(folder_path, "PCA"))
+        os.mkdir(os.path.join(folder_path, "PCA"))
+        if not os.path.exists(os.path.join(MEDIA_ROOT,folder,"PCA.html")):
+            # call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), current_json]
+            call_list = [PYTHON_PATH, os.path.join(RPLOTS_PATH, "PCA.py"), current_json]
+            os.system(" ".join(call_list))
+
+        plot_url = os.path.join(MEDIA_URL,folder,"PCA.html")
+
+        return render(self.request, 'PCA_template.html',
+                      {"job_id": folder,
+                       "plot_url": plot_url,
+                       "group1_name": group1,
+                       "group2_name": group2,
+                       "addFC": addFC,
+                       "addpval": addpval,
+                       })
