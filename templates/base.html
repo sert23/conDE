@@ -48,13 +48,16 @@
       <div style="background-color:lightgrey">
                          <div class="input-group custom-search-form">
 
-                                    <input type="text" name="job_id" class="form-control" placeholder="Search Results by ID">
+                                    <input oninput="updateSearch();" type="text" id="jobId" name="jobId" class="form-control" placeholder="Search Results by ID">
                                 <span class="input-group-btn">
-                                <button class="btn btn-secondary" type="submit">
+                                <a id="search_link" href="#"> <button class="btn btn-secondary">
+{#                                <button class="btn btn-secondary" type="submit">#}
                                     <i class="fa fa-search"></i>
-                                </button>
+                                </button></a>
                             </span>
+                        <script>
 
+                        </script>
                 </div>
         </div>
 
@@ -88,28 +91,28 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
 {#            <h6 class="collapse-header">Custom Components:</h6>#}
-            <a class="collapse-item" href="buttons.html">Buttons</a>
-            <a class="collapse-item" href="cards.html">Cards</a>
+            <a class="collapse-item" href="buttons.html">Merge two tables</a>
+            <a class="collapse-item" href="cards.html">Merge TCGA data files</a>
           </div>
         </div>
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>Charts and Plots</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
+{#      <li class="nav-item">#}
+{#        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">#}
+{#          <i class="fas fa-fw fa-chart-area"></i>#}
+{#          <span>Charts and Plots</span>#}
+{#        </a>#}
+{#        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">#}
+{#          <div class="bg-white py-2 collapse-inner rounded">#}
 {#            <h6 class="collapse-header">Custom Utilities:</h6>#}
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
-          </div>
-        </div>
-      </li>
+{#            <a class="collapse-item" href="utilities-color.html">Colors</a>#}
+{#            <a class="collapse-item" href="utilities-border.html">Borders</a>#}
+{#            <a class="collapse-item" href="utilities-animation.html">Animations</a>#}
+{#            <a class="collapse-item" href="utilities-other.html">Other</a>#}
+{#          </div>#}
+{#        </div>#}
+{#      </li>#}
 
          <!-- Nav Item - Charts -->
       <li class="nav-item">
@@ -290,6 +293,19 @@
 
   <script src="{% static  'js/sb-admin-2.min.js'%}"></script>
 
+  <script>
+
+          function updateSearch() {
+              var search_url = "{% url 'search_result' %}?";
+              var pars = $("#jobId").serialize();
+                $("#search_link").attr("href", search_url.concat(pars));
+
+              {#jobID = $("#jobId").val();#}
+              {#base_url = "{% url 'search_result' %}"#}
+
+        }
+
+  </script>
 
 {% block js %}  {% endblock %}
 
