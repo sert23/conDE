@@ -39,7 +39,7 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-s font-weight-bold text-primary text-uppercase mb-1">Individual method report</div>
+                      <div class="text-s font-weight-bold text-primary text-uppercase mb-1">Individual method reports</div>
                         <div class="h6 mb-0 font-italic text-gray-800">&bull; Download consensus</div>
                         <div class="h6 mb-0 font-italic text-gray-800">&bull; Summary plots</div>
 {#                        <a href="#Individual" id="#openIndividual" onclick="showButton('individual_card')" class="stretched-link"></a>#}
@@ -119,7 +119,7 @@
 
                     List of selected genes <a href="/srnatoolbox/static/IK_exosomes.fastq.gz" download> <i class="fa fa-download fa-fw"></i> Download</a>
                 <br>
-                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal" id="preview_de">  Preview DE table <i class="fa fa-table fa-fw"></i></a>
+                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal" id="preview_de">  Preview consensus DE table <i class="fa fa-table fa-fw"></i></a>
 
 {#                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!#}
 {#                Number of differentially expressed genes: 1180#}
@@ -354,12 +354,149 @@
 
 
         <div class="tab-pane" id="Individual">
-                        <p>Individual</p>
+            <div class="row">
+            <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Select method and thresholds</h6>
                 </div>
-        </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3">
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <label for="id_plot" class="control-label ">
+                                Method:
+                                </label>
+                                </div>
+                                <div class="col-lg-8">
+                                    <select class="form-control select" name="id_plot_method" id="id_plot_method">
+                                {% for method in method_list %}
+                                    <option value="{{ method }}">{{ method }}</option>
+                                {% endfor %}
+                            </select>
+                                </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <label for="id_FC" class="control-label ">
+                                Minimum Fold Change:
+                                </label>  <input type="number" value="1" name="threshold" id="id_FC" size="4" min="0" step="0.1" style="padding-right: 8px; width: 60px;" onkeypress="return event.charCode != 45"/>
+                                    {#                                </label>  <input type="text" value="1" name="threshold" id="id_FC" size="4" style="padding-right: 8px;"/>#}
+                            </div>
+                            <div class="col-lg-6">
+                                <label for="id_pval" class="control-label ">
+                                    Maximum p-value:
+                                    </label>  <input type="number" value="0.05" name="threshold" id="id_pval" min="0" max="1" step="0.01" size="4" style="padding-right: 8px; width: 60px;" onKeyUp="if(this.value>1){this.value='1';}"/>
+{#                                    </label>  <input type="text" value="0.05" name="threshold" id="id_pval" size="4" style="padding-right: 8px;"/>#}
+                            </div>
+                        </div>
+
+               </div>
+
+                    </div>
 
 
-    </div>
+                </div>
+
+
+                    </div>
+            </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-lg-4">
+
+                   <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Differentially expressed genes</h6>
+                </div>
+                <div class="card-body">
+                    Differentially expressed genes: 11000 <br>
+                    Number of differentially expressed genes: 11000
+                    Number of differentially expressed genes: 11000
+                    Number of differentially expressed genes: 11000 <br>
+
+                    List of selected genes <a href="/srnatoolbox/static/IK_exosomes.fastq.gz" download> <i class="fa fa-download fa-fw"></i> Download</a>
+                <br>
+                    <a href="javascript:void(0)" class="card-link" data-toggle="modal" data-target="#tableModal" id="preview_de">  Preview DE table <i class="fa fa-table fa-fw"></i></a>
+
+{#                  The styling for this basic card example is created by using default Bootstrap utility classes. By using utility classes, the style of the card component can be easily modified with no need for any custom CSS!#}
+{#                Number of differentially expressed genes: 1180#}
+                </div>
+              </div>
+                </div>
+                <div class="col-lg-4">
+
+                   <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Visualise differentially expressed genes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="id_plot"  class="control-label ">
+                                Plot type:
+                                </label>
+                        </div>
+                        <div class="col-lg-6">
+                            <select class="form-control select" id="id_plot" name="id_plot">
+                                <option value="heatmap">Heatmap</option>
+                                <option value="volcano">Volcano plot</option>
+                                <option value="PCA">PCA</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-lg-6">
+                            <label for="id_plot" class="control-label ">
+                                Normalization from:
+                                </label>
+                        </div>
+
+
+                        <div class="col-lg-6">
+                            <select class="form-control select" name="id_plot_method" id="id_plot_method">
+
+                                {% for method in method_list %}
+                                    <option value="{{ method }}">{{ method }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-7">
+
+                        </div>
+
+                        <div class="col-lg-5">
+
+                            <input type="hidden" name="job_id" id="job_id" value="{{ job_id }}">
+                            <input type="hidden" name="consensus" id="consensus" value=false>
+                            <a href="#" id="con_plot_link" target="_blank"> <button type="button"  id="consensus_plot_button" class="btn btn-primary" >Show plot</button></a>
+
+
+                        </div>
+                    </div>
+                    </div>
+              </div>
+                </div>
+            </div>
+                </div>
+
+              </div>
+
+
+
+                </div>
+
+
+
 {% endblock %}
 
 {% block js %}

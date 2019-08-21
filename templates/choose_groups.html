@@ -17,6 +17,17 @@
 
 {% block content %}
 
+    <div class="modal fade" id="spinner" tabindex="-1" role="dialog" aria-labelledby="spinnerLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <img style="display:block; margin-left:auto; margin-right:auto; width:50%;" src="{% static 'gif/spinner.gif' %}">
+          <h1 style="text-align: center;">Your job is running...</h1>
+        </div>
+      </div>
+    </div>
+</div>
+
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
@@ -55,7 +66,7 @@
                 <div class="row">
                     <div class="col-lg-10"></div>
                     <div class="col-lg-2">
-                        <input type="submit" id="submit_button" style="display: none" />
+                        <input type="submit" id="submit_button" style="display: none" onclick="$('#spinner').modal('show');" />
                         <button type="button"  id="groups_button" class="btn btn-primary" onclick="$('#submit_button').click();"> Launch DE</button>
                     </div>
                 </div>
