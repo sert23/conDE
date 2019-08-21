@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     # url(r'^$', views.new_upload, name='multi_new'),
+    url(r'^ajax_ind$', views.ajax_individual, name='ajax_indv'),
     url(r'^ajax_cons$', views.ajax_consensus, name='ajax_cons'),
     url(r'^ajax_graph$', views.get_plot_content, name='ajax_graph'),
     url(r'^ajax_recalc$', views.ajax_recalculate, name='ajax_recalc'),

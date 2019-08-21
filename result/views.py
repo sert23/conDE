@@ -140,6 +140,20 @@ def consensusToJson(jobID):
     return heads,body_list
     # return json.dumps(headers),json.dumps(body_list)
 
+def methodToJson(jobID,method):
+    input_table = os.path.join(MEDIA_ROOT,jobID,"consensus",method+".txt")
+    with open(input_table,"r") as table_file:
+        lines = table_file.readlines()
+        headers = lines[0].rstrip().split("\t")
+
+        body_list = []
+        for line in lines[1:]:
+            body_list.append(line.rstrip().split("\t"))
+
+        heads = []
+        for header in headers:
+            heads.append({"title": header})
+    return heads,body_list
 
 
 def draw_plots(path_to_config):
@@ -198,6 +212,8 @@ class DEresult(FormView):
         path = request.path
         folder = path.split("/")[-1]
         folder_path = os.path.join(MEDIA_ROOT,folder)
+        if not os.path.exists(folder_path):
+            return render(self.request, "result_not_found.html", {"jobId": folder})
         for p in ["consensus","plots"]:
             to_make = os.path.join(folder_path,p)
             if not os.path.exists(to_make):
@@ -258,6 +274,15 @@ def ajax_consensus(request):
     data = {}
     job = request.GET.get('id', None)
     con_head, con_body = consensusToJson(job)
+    data["header"] = con_head
+    data["body"] = con_body
+    return JsonResponse(data)
+
+def ajax_individual(request):
+    data = {}
+    job = request.GET.get('id', None)
+    method = request.GET.get('method', None)
+    con_head, con_body = methodToJson(job,method)
     data["header"] = con_head
     data["body"] = con_body
     return JsonResponse(data)
