@@ -45,7 +45,7 @@ def plot_PCA(input_df, PCA_obj,config_dict):
             t=100,
             pad=4
         ),
-        title=" ",
+        title=config_dict.get("title"," "),
         font=dict(size=18),
         # autosize=False,
         # height=650,
@@ -72,7 +72,7 @@ def plot_PCA(input_df, PCA_obj,config_dict):
     # return div
 
 input_json = sys.argv[1]
-# input_json = "/Users/ernesto/PycharmProjects/conDE/upload/IYNT4L3VOR/plot_config.json"
+# input_json = "/Users/ernesto/PycharmProjects/conDE/upload/HRNYYDATFZ/plot_config.json"
 
 with open(input_json, "r") as file:
     config = json.load(file)
@@ -83,6 +83,29 @@ input_file = config["input_matrix"]
 df = pd.read_csv(
     filepath_or_buffer=input_file,
     sep='\t')
+
+pval = config.get("pval")
+if pval:
+    pval = float(pval)
+FC = config.get("FC")
+if FC:
+    FC = float(FC)
+cset = config.get("set")
+ntop = config.get("top_n")
+if ntop:
+    ntop = int(ntop)
+
+if pval and "pval" in df.columns:
+    df = df.loc[(df.pvalue < pval) & ((df.FoldChange > FC) | (df.FoldChange < 1/float(FC)))]
+else:
+    df = df.loc[((df.FoldChange > FC) | (df.FoldChange < 1 / float(FC)))]
+
+if cset == "Over":
+    df = df.loc[df.FoldChange > 1]
+elif cset == "Under":
+    df = df.loc[df.FoldChange < 1 ]
+
+# df = df.head(ntop)
 
 df = df.drop(["FoldChange","log2FoldChange","pvalue","padj"],axis=1, errors="ignore")
 df_t = df.T
