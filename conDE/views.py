@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView
 from django.views.generic import FormView, DetailView
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 
 
 from .forms import MultiURLForm
@@ -25,3 +26,7 @@ def test_ajax(request):
 def index(request):
     return render(request, 'index.html', {'description': "z"})
 
+def search(request):
+    jobId = request.GET.get('jobId', None)
+
+    return redirect(reverse_lazy("result") + jobId)

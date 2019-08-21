@@ -26,6 +26,7 @@ from django.urls import path
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', views.index, name='home'),
+    url(r'^search', views.search, name='search_result'),
     url(r'^result/', include('result.urls')),
     url(r'^test_ajax/', views.SignUpView.as_view(), name='test_ajax'),
     url(r'^ajax/test_ajax/$', views.test_ajax, name='ajax_test'),
