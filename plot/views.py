@@ -84,6 +84,54 @@ def new_plot_view(request):
     #copy expression matrix
 
 
+def pca_recalculate(request):
+    id = request.GET.get('id', None)
+    folder = os.path.join(MEDIA_ROOT, id)
+    path_to_config = os.path.join(folder, "plot_config.json")
+    shutil.rmtree(os.path.join(folder, "PCA"))
+    os.mkdir(os.path.join(folder, "PCA"))
+    new_outdir = os.path.join(folder, "PCA", rnd_str())
+    os.mkdir(new_outdir)
+
+    with open(path_to_config) as f:
+        config = json.load(f)
+
+    group1_name = request.GET.get('group1_name', None)
+    if group1_name:
+        print("")
+    group2_name = request.GET.get('group2_name', None)
+    if group2_name:
+        print("")
+    ntop = request.GET.get('ntop', None)
+    if ntop:
+        config.update({'ntop': ntop})
+    sortBy = request.GET.get('sortBy', None)
+    if sortBy:
+        config.update({'sortBy': sortBy})
+    sortSense = request.GET.get('sortSense', None)
+    if sortSense:
+        config.update({'sortSense': sortSense})
+
+    iset = request.GET.get('set', None)
+    if iset:
+        config.update({"set": iset})
+    title = request.GET.get('title', None)
+    if title:
+        config.update({"title": title})
+    pval = request.GET.get('pval', None)
+    if title:
+        config.update({"pval": pval})
+    FC = request.GET.get('FC', None)
+    if title:
+        config.update({"FC": FC})
+    config.update({"folder": new_outdir})
+    with open(path_to_config, 'w') as f:
+        json.dump(config, f)
+    call_list = [PYTHON_PATH, os.path.join(RPLOTS_PATH, "PCA.py"), path_to_config]
+    os.system(" ".join(call_list))
+    return JsonResponse({"new_url": os.path.join(new_outdir.replace(MEDIA_ROOT, MEDIA_URL), "PCA.html")
+                         })
+
 
 def heatmap_recalculate(request):
     id = request.GET.get('id', None)
