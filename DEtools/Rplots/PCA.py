@@ -90,6 +90,8 @@ if pval:
 FC = config.get("FC")
 if FC:
     FC = float(FC)
+else:
+    FC = float(1)
 cset = config.get("set")
 ntop = config.get("top_n")
 if ntop:
