@@ -355,6 +355,8 @@ class Pca(FormView):
             # call_list = [RSCRIPT_PATH, os.path.join(RPLOTS_PATH, "heatmap.R"), current_json]
             call_list = [PYTHON_PATH, os.path.join(RPLOTS_PATH, "PCA.py"), current_json]
             os.system(" ".join(call_list))
+            with open(os.path.join(folder_path,"PCA.log"), "w") as text_file:
+                text_file.write(" ".join(call_list))
 
         plot_url = os.path.join(MEDIA_URL,folder,"PCA.html")
 
