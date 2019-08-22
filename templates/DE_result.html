@@ -444,7 +444,7 @@
                                 </label>
                         </div>
                         <div class="col-lg-6">
-                            <select class="form-control select" id="id_plot" name="id_plot">
+                            <select class="form-control select" id="ind_plot" name="ind_plot">
                                 <option value="heatmap">Heatmap</option>
                                 <option value="volcano">Volcano plot</option>
                                 <option value="PCA">PCA</option>
@@ -497,7 +497,7 @@
 
 
                         <div class="col-lg-6">
-                            <select class="form-control select" name="id_plot_method" id="id_plot_method">
+                            <select class="form-control select" name="ind_plot_method" id="ind_plot_method">
 
                                 {% for method in method_list %}
                                     <option value="{{ method }}">{{ method }}</option>
@@ -515,13 +515,31 @@
 
                             <input type="hidden" name="job_id" id="job_id" value="{{ job_id }}">
                             <input type="hidden" name="consensus" id="consensus" value=false>
-                            <a href="#" id="con_plot_link" target="_blank"> <button type="button"  id="consensus_plot_button" class="btn btn-primary" >Show plot</button></a>
+                            <a href="#" id="ind_plot_link" target="_blank"> <button type="button"  id="ind_plot_button" class="btn btn-primary" >Show plot</button></a>
 
 
                         </div>
                     </div>
                     </div>
               </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="card shadow">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">Download data</h6>
+                </div>
+                <div class="card-body">
+                Download <a id="link_selected" href="{{ selected_link }}" download>  selected <p id="method_text" style="display:inline">DEseq</p>  results <i class="fa fa-download fa-fw"></i></a> <br>
+                Download <a id="link_full" href="{{ unselected_link }}" download>  full <p id="method_text2" style="display:inline">DEseq</p> results <i class="fa fa-download fa-fw"></i></a> <br>
+                Download <a href="{{ full_de_link }}" download>  all methods results <i class="fa fa-download fa-fw"></i></a> <br>
+
+
+
+                    </div>
+              </div>
+
+
                 </div>
             </div>
                 </div>
@@ -624,7 +642,6 @@ function showTab(element)  {
 
     <script>
     $('#preview_ind').on('click', function () {
-
         $.ajax({
         url: '{% url "ajax_indv" %}',
         data: {
@@ -633,9 +650,59 @@ function showTab(element)  {
         },
         dataType: 'json',
         success: function (data) {
-            alert("hey");
+            {#alert("hey");#}
             {#alert("working");#}
+
+            $("#method_text").text(data.method);
+            $("#method_text2").text(data.method);
+
             $("#tableModal2").modal('show');
+            var header = data.header;
+            var body = data.body;
+            var table = $('#ind_table').DataTable( {
+
+                data: body,
+                destroy: true,
+            //        processing: true,
+            //        serverSide: true,
+            //        deferRender: false,
+                'language':{
+               "loadingRecords": "&nbsp;",
+              "processing": "Loading..."
+            },
+                columns: header,
+            });
+
+
+        }
+      });
+
+
+    });
+
+    </script>
+
+    <script>
+    $('#ind_method').on('change', function () {
+        $.ajax({
+        url: '{% url "ajax_indv" %}',
+        data: {
+            "id" : "{{ job_id }}",
+            "method" : $("#ind_method").val(),
+        },
+        dataType: 'json',
+        success: function (data) {
+            {#alert("hey");#}
+            {#alert("working");#}
+
+            $("#method_text").text(data.method);
+            $("#method_text2").text(data.method);
+            $("#ind_plot_method").val(data.method);
+
+            $("#link_selected").attr("href",data.unselected_link);
+            $("#link_full").attr("href",data.selected_link);
+
+            {#$("#tableModal2").modal('show');#}
             var header = data.header;
             var body = data.body;
             var table = $('#ind_table').DataTable( {
@@ -731,6 +798,36 @@ function showButton(element){
 
 
     </script>
+
+    <script>
+
+    $(document).ready(function() {
+
+        var plot_url = "{% url 'new_plot' %}?";
+        var pars = $("#ind_plot, #ind_plot_method,#job_id").serialize();
+        $("#ind_plot_link").attr("href", plot_url.concat(pars));
+
+
+    $("#id_plot").change(function(){
+        var plot_url = "{% url 'new_plot' %}?";
+        var pars = $("#ind_plot, #ind_plot_method,#job_id").serialize();
+        $("#ind_plot_link").attr("href", plot_url.concat(pars));
+            });
+
+
+        $("#id_plot_method").change(function(){
+        var plot_url = "{% url 'new_plot' %}?";
+        var pars = $("#ind_plot, #ind_plot_method,#job_id").serialize();
+        $("#ind_plot_link").attr("href", plot_url.concat(pars));
+            });
+
+
+    });
+
+
+
+    </script>
+
 
     <script>
     $("#id_plot_type").change(function () {
