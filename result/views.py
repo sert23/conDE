@@ -55,7 +55,7 @@ def select_DE(path,pval,FC,out):
     if FC < 1:
         FC= 1/float(FC)
     k1 = df.loc[(df.pvalue < pval) & ((df.FoldChange > FC) | (df.FoldChange < 1/float(FC)))]
-    k1.to_csv(out, sep='\t')
+    k1.to_csv(out, sep='\t', index=False)
     return k1['name'].tolist()
 
 def calculate_consensus(directory,methods,pval,FC):
@@ -239,6 +239,19 @@ class DEresult(FormView):
         # con_head,con_body = consensusToJson(folder)
         start_plot = os.path.join(folder_path,"plots","UpSet.jpg").replace(MEDIA_ROOT,MEDIA_URL)
 
+        #add links
+
+        zip_file = os.path.join(folder_path, "de.zip")
+
+        wait_list = []
+        call_list = ["zip", "-r", zip_file, os.path.join(folder_path,"de","*")]
+        wait_list.append(subprocess.Popen(call_list,
+                                              stdout=subprocess.PIPE,
+                                              stderr=subprocess.PIPE))
+
+        full_de_link = zip_file.replace(MEDIA_ROOT,MEDIA_URL)
+        unselected_link = os.path.join(folder_path,"de","DESeq","allGenes.csv").replace(MEDIA_ROOT,MEDIA_URL)
+        selected_link = os.path.join(folder_path,"consensus","DESeq.txt").replace(MEDIA_ROOT,MEDIA_URL)
 
         return render(self.request, 'DE_result.html',
                       {"job_id": folder,
@@ -246,6 +259,9 @@ class DEresult(FormView):
                        "plot_list" : plot_list,
                        "start_plot": start_plot,
                        "set_list": set_list,
+                       "full_de_link": full_de_link,
+                       "unselected_link": unselected_link,
+                       "selected_link": selected_link,
                        # "con_head": con_head,
                        # "con_body": con_body
                        })
@@ -281,8 +297,14 @@ def ajax_consensus(request):
 def ajax_individual(request):
     data = {}
     job = request.GET.get('id', None)
+    folder_path = os.path.join(MEDIA_ROOT,job)
     method = request.GET.get('method', None)
     con_head, con_body = methodToJson(job,method)
     data["header"] = con_head
     data["body"] = con_body
+    data["method"] = method
+
+    data["unselected_link"]  = os.path.join(folder_path, "de", method, "allGenes.csv").replace(MEDIA_ROOT, MEDIA_URL)
+    data["selected_link"] = os.path.join(folder_path, "consensus", method + ".txt").replace(MEDIA_ROOT, MEDIA_URL)
+
     return JsonResponse(data)
