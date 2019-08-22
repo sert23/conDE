@@ -43,15 +43,21 @@ def restrict_to_consensus(input_matrix,input_consensus):
 
 def new_plot_view(request):
     old_id = request.GET.get('job_id', None)
-    plot = request.GET.get('id_plot', None)
-    method = request.GET.get('id_plot_method', None)
+    consensus = request.GET.get('consensus', None)
     old = True
     while old:
         new_id = rnd_str()
-        new_path = os.path.join(MEDIA_ROOT,new_id)
+        new_path = os.path.join(MEDIA_ROOT, new_id)
         if not os.path.exists(new_path):
             os.mkdir(new_path)
             old = False
+    if consensus:
+        plot = request.GET.get('id_plot', None)
+        method = request.GET.get('id_plot_method', None)
+    else:
+        plot = request.GET.get('ind_plot', None)
+        method = request.GET.get('ind_plot_method', None)
+
     orig_tab = os.path.join(MEDIA_ROOT,old_id,"de",method,"allGenes.csv")
     dest_tab = os.path.join(new_path,"input.matrix")
     shutil.copy(orig_tab,dest_tab)
