@@ -32,7 +32,7 @@
 
                    <div class="card shadow">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Choose input file <a  href="#" data-toggle="modal" data-target="#myModal" class="btn btn-link"><i class="fa fa-question-circle"> </i></a></h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Choose input file <a  href="#" data-toggle="modal" data-target="#inputModal" class="btn btn-link"><i class="fa fa-question-circle"> </i></a></h6>
 
                 </div>
                 <div class="card-body">
@@ -89,7 +89,7 @@
                     <br>
                    <div class="card shadow" style="display: none" id="groups_div">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Groups names</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Groups names <a  href="#" data-toggle="modal" data-target="#groupsModal" class="btn btn-link"><i class="fa fa-question-circle"> </i></a></h6>
                 </div>
                 <div class="card-body">
                     <div class="row justify-content-md-center">
@@ -120,7 +120,8 @@
 
                 <div class="card shadow">
                 <div class="card-header py-3">
-                  <h6 class="m-0 font-weight-bold text-primary">Preview table</h6>
+                  <h6 class="m-0 font-weight-bold text-primary">Preview table <a  href="#" data-toggle="modal" data-target="#previewTable" class="btn btn-link"><i class="fa fa-question-circle"> </i></a></h6>
+
                 </div>
                 <div class="card-body">
 
@@ -309,6 +310,8 @@
 
 {% block modals %}
 
-    {% include "modals/upload/test.html" %}
+    {% include "modals/upload/input.html" %}
+    {% include "modals/upload/previewTable.html" %}
+    {% include "modals/upload/groups.html" %}
 
 {%  endblock %}
