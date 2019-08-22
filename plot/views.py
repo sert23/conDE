@@ -74,7 +74,7 @@ def new_plot_view(request):
         json.dump(original_config, f)
 
     if plot == "heatmap":
-        return redirect(reverse_lazy("heatmap") + new_id)
+        return redirect(reverse_lazy("volcano") + new_id)
     if plot == "volcano":
         return redirect(reverse_lazy("heatmap") + new_id)
     if plot == "PCA":
