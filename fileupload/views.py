@@ -151,8 +151,10 @@ class Upload(FormView):
         button_link = reverse_lazy("groups") + "/" +folder
         # return render(self.request, 'tagsinput_start.html', {"request_path":path, "job_id" : folder,
         #                                                      "form" : PhotoForm, "header_list":header_list })
+        example_matrix = os.path.join(MEDIA_URL, "conDE_example.txt")
         return render(self.request, 'simple_upload.html', {"request_path":path, "job_id" : folder, "form" : PhotoForm,
-                                                           "header_list": header_list, "button_link": button_link})
+                                                            "header_list": header_list, "button_link": button_link,
+                                                            "example_matrix": example_matrix})
         # return render(self.request, 'multiupload.html', {'file_list': onlyfiles, "request_path":path, "form": MultiURLForm })
         #return render(self.request, 'multiupload.html', {'file_list': [os.path.join(MEDIA_ROOT,folder),os.path.join(MEDIA_ROOT,folder)]})
 
@@ -224,9 +226,11 @@ class ChooseGroups(FormView):
             group2 = lines[1].rstrip().replace("_", " ")
 
 
+
         # print("hello")
         return render(self.request, 'choose_groups.html', {"request_path":path, "job_id" : folder,
-                                                           "header_list": header_list, "group1":group1, "group2":group2
+                                                           "header_list": header_list, "group1":group1, "group2":group2,
+
                                                            })
 
     def post(self, request):
